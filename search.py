@@ -2,7 +2,7 @@ import os
 import ast
 
 
-def get_test_folder_path() -> str:
+def find_folder_path() -> str:
     """
     Searches for main test folder path.
 
@@ -25,12 +25,14 @@ def get_test_modules() -> list[str]:
     """
     test_files = []
 
-    for root, _, files in os.walk(get_test_folder_path()):
+    for root, _, files in os.walk(find_folder_path()):
         for file_name in files:
 
+            # Ignore cache files
             if file_name.endswith('pyc'):
                 continue
 
+            # Look only for those that start with:
             if file_name.startswith('test_'):
                 file_path = os.path.join(root, file_name)
                 test_files.append(file_path.replace('.\\', ''))
@@ -38,53 +40,59 @@ def get_test_modules() -> list[str]:
     return test_files
 
 
-def show_info(function_node):
+def show_info(function_node: ast.FunctionDef) -> None:
     """
     Prints out information about given function
     and its parameters.
 
     Args:
-        function_node (_type_): _description_
+        function_node (ast.FunctionDef): Function definition.
     """
     print(f"Function name: {function_node.name}")
-    # if function_node.args.args:
-    #     print("Args:")
-    #     for arg in function_node.args.args:
-    #         print(f"\tParameter name: {arg.arg}")
+    if function_node.args.args:
+        print("Args:")
+        for arg in function_node.args.args:
+            print(f"\tParameter name: {arg.arg}")
 
 
-def collect_tests() -> list[str]:
+def create_tree() -> list[dict]:
     """
     Searches for test functions in given test modules.
 
     Returns:
-        list[str]: List of combined tests and their module paths.
+        list[str]: List of module names along
+                    with their test functions.
     """
-    collected_tests = [] 
-    file_paths = get_test_modules()
-    for file_path in file_paths:
+    test_tree = []
 
-        with open(file_path, encoding='utf-8') as file:
+    for module in get_test_modules():
+
+        with open(module, encoding='utf-8') as file:
             node = ast.parse(file.read())
 
-        module_path = file_path.replace('\\', '.')
-        print(module_path)
-
+        # Get all functions and classes from module.
         functions = [n for n in node.body if isinstance(n, ast.FunctionDef)]
         classes = [n for n in node.body if isinstance(n, ast.ClassDef)]
 
+        module = module.replace('\\', '.').replace('.py', '')
+        dict = {}
+        dict[module] = []
+
+        # If test function detected add to the dictionary.
         for function in functions:
-            show_info(function)
-            collected_tests.append(module_path.replace('py', function.name))
+            if function.name.startswith('test_'):
+                dict[module].append(function.name)
 
+        # Same with classes and their methods.
         for class_ in classes:
-            print("Class name:", class_.name)
+            dict[module].append({class_.name: []})
             methods = [n for n in class_.body if isinstance(n, ast.FunctionDef)]
+
+            # Add methods to nested dictionary.
             for method in methods:
-                show_info(method)
+                if method.name.startswith('test_'):
+                    dict[module][-1][class_.name].append(method.name)
 
-    return collected_tests
+        test_tree.append(dict)
 
-# TODO: Filter only those functions which have 'test' in their name.
-# test_list = [test_folder + '.' + if test_name.startswith('test')]
-
+    return test_tree
