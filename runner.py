@@ -1,15 +1,17 @@
 import time
 import importlib
-import tests.test_login
-from search import collect_tests
+
 from process import Process
+from search import create_tree
+
 
 processes = []
 
 
+
 def process_func(test_list):
     for test in test_list:
-        i = importlib.import_module('tests')
+        # tests = importlib.import_module('tests.test_login')
         p = Process(target=eval(test), args="x")
         p.start()
         processes.append(p)
@@ -22,8 +24,9 @@ def process_func(test_list):
 
 
 def main():
-    # test_list = ['tests.test_login.' + test_name for test_name in dir(tests.test_login) if test_name.startswith('test')]
-    test_list = collect_tests()
+    
+    # test_list = ['tests.test_login.' + test_name for test_name in dir(tests) if test_name.startswith('test_')]
+    # test_list = collect_tests()
     print(test_list)
 
     start = time.perf_counter()
@@ -32,8 +35,29 @@ def main():
 
     print(f'Finished in {round(end-start, 2)} second(s)')
 
+def make_me():
+    print('xd')
+
 if __name__ == "__main__":
-    main()
+    # main()
+    test_tree = create_tree()[0]
+    # print(test_tree)
+    key = list(test_tree.keys())[0]
+    value = list(test_tree.values())
+    
+    print(key)
+    print(value[0][5])
+
+    test_module = importlib.import_module(key)
+    test_module_str = 'tests.test_login'
+
+    execute_me = test_module_str + '.' + value[0][5]
+  
+    p = Process(target=eval(execute_me))
+    p.start()
+    p.join()
+
+
 
 
 class Runner(object):
@@ -44,3 +68,17 @@ class Runner(object):
 
     def run_tests():
         pass
+
+
+"""
+[{'tests.test_login': ['test_one',
+                       'test_two',
+                       'test_error',
+                       'test_x',
+                       'test_four',
+                       'test_make',
+                       {'TestSuite': ['test_krzys', 'test_krzys2']}]},
+ {'tests.test_register': ['test_paka', {'Testing': ['test_hihi']}]},
+ {'tests.api.test_api1': ['test_api_one']},
+ {'tests.api.test_api2': []}]
+"""
