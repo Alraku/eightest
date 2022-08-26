@@ -41,7 +41,6 @@ def make_me():
 if __name__ == "__main__":
     # main()
     test_tree = create_tree()[0]
-    # print(test_tree)
     key = list(test_tree.keys())[0]
     value = list(test_tree.values())
     
@@ -49,22 +48,16 @@ if __name__ == "__main__":
     print(value[0][5])
 
     test_module = importlib.import_module(key)
-    test_module_str = 'tests.test_login'
 
-    execute_me = test_module_str + '.' + value[0][5]
-  
-    p = Process(target=eval(execute_me))
+    p = Process(target=getattr(test_module, value[0][5]))
     p.start()
     p.join()
-
-
 
 
 class Runner(object):
 
     def collect_tests():
         pass
-
 
     def run_tests():
         pass
