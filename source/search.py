@@ -1,6 +1,8 @@
 import os
 import ast
 
+from source.exceptions import TestOutOfClassException
+
 
 def find_folder_path() -> str:
     """
@@ -78,12 +80,13 @@ def create_tree() -> list[dict]:
         dict = {}
         dict[module] = []
 
-        # If test function detected add to the dictionary.
+        # If test function detected raise exception.
         for function in functions:
             if function.name.startswith('test_'):
-                dict[module].append(function.name)
+                # dict[module].append(function.name)
+                raise TestOutOfClassException(function.name)
 
-        # Same with classes and their methods.
+        # Search for tests in test classes.
         for class_ in classes:
             dict[module].append({class_.name: []})
             methods = [n for n in class_.body if isinstance(n, ast.FunctionDef)]
