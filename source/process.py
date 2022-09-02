@@ -1,17 +1,17 @@
 import traceback
-import multiprocessing
+import multiprocess
 
 
-class Process(multiprocessing.Process):
+class Process(multiprocess.Process):
 
     def __init__(self, *args, **kwargs):
-        multiprocessing.Process.__init__(self, *args, **kwargs)
-        self._parent_conn, self._child_conn = multiprocessing.Pipe()
+        multiprocess.Process.__init__(self, *args, **kwargs)
+        self._parent_conn, self._child_conn = multiprocess.Pipe()
         self._exception = None
 
     def run(self):
         try:
-            multiprocessing.Process.run(self)
+            multiprocess.Process.run(self)
             self._child_conn.send(None)
         except Exception as e:
             tb = traceback.format_exc()
