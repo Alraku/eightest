@@ -1,6 +1,8 @@
+import time
 import traceback
 import multiprocess
-from logger import NewLogger
+
+from logger import S_Logger
 
 
 class Process(multiprocess.Process):
@@ -13,14 +15,21 @@ class Process(multiprocess.Process):
 
     def run(self):
         try:
-            logger = NewLogger(test_name=self._test_name).get_logger()
+            start = time.perf_counter()
+            logger = S_Logger(self._test_name).get_logger()
             logger.info('EXECUTION OF %s HAS STARTED.', self._test_name)
             multiprocess.Process.run(self)
             self._child_conn.send(None)
 
         except Exception as e:
             tb = traceback.format_exc()
+            logger.error(f'EXCEPTION OCCURRED: {tb}')
             self._child_conn.send((e, tb))
+
+        finally:
+            logger.info('EXECUTION OF %s HAS ENDED.', self._test_name)
+            end = time.perf_counter()
+            logger.info(f'FINISHED in {round(end-start, 2)} second(s)')
 
     @property
     def exception(self):

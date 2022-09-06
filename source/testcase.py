@@ -56,6 +56,7 @@ class TestCase(metaclass=MetaTestCase):
         self.name = name
         self.status: Status = Status.PASS
         self.message: Optional[str]
+        self.duration: float = 0
 
     def before(self) -> None:
         """
