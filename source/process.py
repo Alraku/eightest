@@ -2,7 +2,7 @@ import time
 import traceback
 import multiprocess
 
-from logger import S_Logger
+from source.logger import S_Logger
 
 
 class Process(multiprocess.Process):
