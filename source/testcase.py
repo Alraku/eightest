@@ -76,11 +76,12 @@ class TestCase(metaclass=MetaTestCase):
         """
         pass
 
-    def _update(self, status: Status) -> None:
+    def _update(self, status: Status, message: str) -> None:
         """
         Internal, update status property.
         """
         self.status = status
+        self.message = message
 
     def fail(self, message: str | None) -> None:
         """
