@@ -2,8 +2,9 @@ import importlib
 
 from ast import Module
 from typing import Tuple
-from search import create_tree
-from source.process import Process
+from multiprocess import Semaphore
+from source.search import create_tree
+from source.process import S_Process
 
 
 class Runner(object):
@@ -18,6 +19,7 @@ class Runner(object):
         and generating tests' hierarchy.
         """
         self.processes: list = []
+        self.test_results: list = []
         self.test_tree: list[dict] = create_tree()
 
     def collect_tests(self) -> None:
@@ -56,6 +58,11 @@ class Runner(object):
         Creates independent processes and appends
         them into the pool of processes.
         """
+        # Create a pool of processes by defined number
+        # ? NO_SYSTEM_CPU = multiprocess.cpu_count()
+        concurrency = 2
+        semaphore = Semaphore(concurrency)
+
         # For each module in test hierarchy.
         for module in self.test_tree:
             module, mod_name, mod_members = self.importer(module)
@@ -68,13 +75,17 @@ class Runner(object):
                 for test_name in test_class[next(iter(test_class.keys()))]:
                     _class_instance = _class(test_name)
 
-                    process = Process(
+                    semaphore.acquire()
+
+                    process = S_Process(
                             target=getattr(_class, test_name),
                             args=(_class_instance,),
-                            test_name=test_name
+                            test_name=test_name,
+                            semaphore=semaphore
                     )
                     process.start()
                     self.processes.append(process)
+                    self.test_results.append(_class_instance)
 
         # Wait untill all processes are finished and get exceptions.
         for process in self.processes:
@@ -82,6 +93,9 @@ class Runner(object):
             if process.exception:
                 error, traceback = process.exception
                 print(traceback)
+
+        # for test_result in self.test_results:
+        #     print(test_result.status)
 
 
 if __name__ == "__main__":
