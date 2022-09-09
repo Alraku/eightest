@@ -1,7 +1,7 @@
 import os
 import logging
 
-from utils import get_time
+from source.utils import get_time
 from pathlib import Path
 from logging import (FileHandler,
                      StreamHandler,
