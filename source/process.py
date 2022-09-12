@@ -18,6 +18,7 @@ class S_Process(Process):
 
     def __init__(self,
                  test_name: str,
+                 start_time: str,
                  semaphore: Semaphore,
                  *args,
                  **kwargs) -> None:
@@ -36,7 +37,7 @@ class S_Process(Process):
         self._exception = None
         self._test_name = test_name
         self._semaphore = semaphore
-        # print('PROCESS: ', kwargs['args'][0].status)
+        self._start_time = start_time
 
     def run(self) -> None:
         """
@@ -44,7 +45,7 @@ class S_Process(Process):
         """
         try:
             start = time.perf_counter()
-            logger = S_Logger(self._test_name).get_logger()
+            logger = S_Logger(self._test_name, self._start_time).get_logger()
             logger.info('EXECUTION OF %s HAS STARTED.', self._test_name)
             Process.run(self)
             self._child_conn.send(None)

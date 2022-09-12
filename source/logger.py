@@ -1,7 +1,6 @@
 import os
 import logging
 
-from source.utils import get_time
 from pathlib import Path
 from logging import (FileHandler,
                      StreamHandler,
@@ -84,7 +83,10 @@ class S_Logger(Logger):
     Class that overrides standard Logging library.
     """
 
-    def __init__(self, test_name: str, log_name: str = 'main') -> None:
+    def __init__(self,
+                 test_name: str,
+                 start_time: str,
+                 log_name: str = 'main') -> None:
         """
         Initialization of Logger instance.
 
@@ -95,11 +97,8 @@ class S_Logger(Logger):
         self.logger = logging.getLogger(log_name)
         self.logger.setLevel(logging.DEBUG)
 
-        # Used for creating test_session folder.
-        self.start_time = get_time()
-
         self.logger.addHandler(S_StreamHandler())
-        self.logger.addHandler(S_FileHandler(test_name, self.start_time))
+        self.logger.addHandler(S_FileHandler(test_name, start_time))
 
     @classmethod
     def get_logger(cls) -> logging.Logger:
