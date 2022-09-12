@@ -2,9 +2,11 @@ import importlib
 
 from ast import Module
 from typing import Tuple
+from source.utils import get_time
 from multiprocess import Semaphore
-from source.search import create_tree
 from source.process import S_Process
+from source.search import create_tree
+from source.testcase import Results, Status
 
 
 class Runner(object):
@@ -19,8 +21,8 @@ class Runner(object):
         and generating tests' hierarchy.
         """
         self.processes: list = []
-        self.test_results: list = []
         self.test_tree: list[dict] = create_tree()
+        self.test_results = Results()
 
     def collect_tests(self) -> None:
         """
@@ -62,6 +64,7 @@ class Runner(object):
         # ? NO_SYSTEM_CPU = multiprocess.cpu_count()
         concurrency = 2
         semaphore = Semaphore(concurrency)
+        start_time = get_time()
 
         # For each module in test hierarchy.
         for module in self.test_tree:
@@ -73,29 +76,29 @@ class Runner(object):
 
                 # For each test in given TestSuite.
                 for test_name in test_class[next(iter(test_class.keys()))]:
-                    _class_instance = _class(test_name)
+                    _test_instance = _class(test_name)
 
                     semaphore.acquire()
 
                     process = S_Process(
                             target=getattr(_class, test_name),
-                            args=(_class_instance,),
+                            args=(_test_instance,),
                             test_name=test_name,
+                            start_time=start_time,
                             semaphore=semaphore
                     )
                     process.start()
-                    self.processes.append(process)
-                    self.test_results.append(_class_instance)
+                    self.processes.append((process, _test_instance))
 
-        # Wait untill all processes are finished and get exceptions.
-        for process in self.processes:
+        # Wait untill all processes are finished and get test results.
+        for process, instance in self.processes:
             process.join()
+
             if process.exception:
                 error, traceback = process.exception
-                print(traceback)
+                instance.status = Status.FAIL
 
-        # for test_result in self.test_results:
-        #     print(test_result.status)
+            self.test_results.add(instance)
 
 
 if __name__ == "__main__":
