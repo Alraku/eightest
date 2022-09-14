@@ -1,0 +1,15 @@
+2022-09-13 14:12:41 [INFO ] line:49 of process.py      >> EXECUTION OF test_api_two HAS STARTED.
+2022-09-13 14:12:41 [DEBUG] line:12 of test_login.py   >> BEFORE LOG
+2022-09-13 14:12:41 [DEBUG] line:24 of test_login.py   >> TEST_TWO LOG
+2022-09-13 14:12:43 [ERROR] line:55 of process.py      >> EXCEPTION OCCURRED: Traceback (most recent call last):
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\sprinter\source\process.py", line 50, in run
+    Process.run(self)
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\sprinter\.venv\lib\site-packages\multiprocess\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\sprinter\source\testcase.py", line 28, in new_test
+    args[0].after()
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\sprinter\tests\test_login.py", line -1, in test_api_two
+AssertionError
+
+2022-09-13 14:12:43 [INFO ] line:59 of process.py      >> EXECUTION OF test_api_two HAS ENDED.
+2022-09-13 14:12:43 [INFO ] line:61 of process.py      >> FINISHED in 2.03 second(s)

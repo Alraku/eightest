@@ -1,0 +1,3 @@
+2022-09-13 14:12:43 [INFO ] line:49 of process.py      >> EXECUTION OF test_upper HAS STARTED.
+2022-09-13 14:12:46 [INFO ] line:59 of process.py      >> EXECUTION OF test_upper HAS ENDED.
+2022-09-13 14:12:46 [INFO ] line:61 of process.py      >> FINISHED in 3.01 second(s)
