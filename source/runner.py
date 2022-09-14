@@ -6,7 +6,8 @@ from source.utils import get_time
 from multiprocess import Semaphore
 from source.process import S_Process
 from source.search import create_tree
-from source.testcase import Results, Status
+from source.testcase import (Results,
+                             Status)
 
 
 class Runner(object):
@@ -90,7 +91,13 @@ class Runner(object):
                     process.start()
                     self.processes.append((process, _test_instance))
 
-        # Wait untill all processes are finished and get test results.
+        self.get_results()
+
+    def get_results(self) -> None:
+        """
+        Wait untill all processes are finished
+        and get test results.
+        """
         for process, instance in self.processes:
             process.join()
 
