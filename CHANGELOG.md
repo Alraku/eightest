@@ -15,3 +15,16 @@ This is first pre-release version of Sprinter software. From now on all major ch
 - Logging to console and file 
 
 **Full Changelog**: https://github.com/Alraku/sprinter/commits/v0.1.0
+
+# v0.0.x (2022-09-06)
+
+## Major changes:
+
+- Added process duration.
+- Code refactor
+
+# v0.0.x (2022-09-05)
+
+## Major changes:
+
+- Added custom logger to process.
