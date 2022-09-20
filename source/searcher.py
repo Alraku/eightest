@@ -1,7 +1,8 @@
 import os
 import ast
 
-from source.exceptions import TestOutOfClassException
+from source.exceptions import (NoTestsFoundError,
+                               TestOutOfClassError)
 
 
 def find_folder_path() -> str:
@@ -12,9 +13,14 @@ def find_folder_path() -> str:
         str: path to test folder
     """
     for root, dirs, _ in os.walk(".", topdown=True):
+        exclude = set(['.git', '.venv', '.vscode', '__pycache__'])
+        dirs[:] = [d for d in dirs if d not in exclude]
+
         for dirname in dirs:
             if dirname in ('tests', 'test'):
                 return os.path.join(root, dirname)
+
+        raise FileNotFoundError('Could not find test(s) folder.')
 
 
 def get_test_modules() -> list[str]:
@@ -31,15 +37,18 @@ def get_test_modules() -> list[str]:
         for file_name in files:
 
             # Ignore cache files
-            if file_name.endswith('pyc'):
+            if file_name.endswith('.pyc'):
                 continue
 
-            # Look only for those that start with:
+            # Look only for those that starts with:
+            # FIXME Fix path filtering for UNIX.
             if file_name.startswith('test_'):
                 file_path = os.path.join(root, file_name)
                 test_files.append(file_path.replace('.\\', ''))
 
-    return test_files
+    if test_files:
+        return test_files
+    raise NoTestsFoundError
 
 
 def show_info(function_node: ast.FunctionDef) -> None:
@@ -50,9 +59,13 @@ def show_info(function_node: ast.FunctionDef) -> None:
     Args:
         function_node (ast.FunctionDef): Function definition.
     """
+    if not isinstance(function_node, ast.FunctionDef):
+        raise TypeError(f'{function_node} must be type of ast.FunctionDef')
+
     print(f"Function name: {function_node.name}")
     if function_node.args.args:
         print("Args:")
+
         for arg in function_node.args.args:
             print(f"\tParameter name: {arg.arg}")
 
@@ -84,7 +97,7 @@ def create_tree() -> list[dict]:
         for function in functions:
             if function.name.startswith('test_'):
                 # dict[module].append(function.name)
-                raise TestOutOfClassException(function.name)
+                raise TestOutOfClassError(function.name)
 
         # Search for tests in test classes.
         for class_ in classes:
