@@ -124,5 +124,4 @@ if __name__ == "__main__":
     runner.show_results()
 
 
-# wysylac zmienna z tablica z rezultatami do kadego procesu i niech proces sobie aktujalizuje po skonczeniu te zmienna
-
+# TODO Make result creation on the side of process and send it back by pipe to parent process.
