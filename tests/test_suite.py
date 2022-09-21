@@ -23,3 +23,8 @@ class TestSuite(TestCase):
         logger.debug('TEST_TWO LOG')
         time.sleep(2)
         assert 1 == 0
+
+    def test_three(self):
+        logger.debug('TEST_THREE LOG')
+        1/0
+        assert 0 == 0
