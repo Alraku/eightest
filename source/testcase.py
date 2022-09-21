@@ -55,9 +55,9 @@ class TestCase(metaclass=MetaTestCase):
 
     def __init__(self, name) -> None:
         self.name = name
-        self._status: Status = Status.PASS
-        self.message: Optional[str]
         self.duration: float = 0
+        self.message: Optional[str]
+        self._status: Status = Status.PASS
         self._parent_conn, self._child_conn = Pipe()
 
     def before(self) -> None:

@@ -35,9 +35,10 @@ class S_Process(Process):
         Process.__init__(self, *args, **kwargs)
         self._parent_conn, self._child_conn = Pipe()
         self._exception = None
-        self._test_name = test_name
-        self._semaphore = semaphore
-        self._start_time = start_time
+        self._duration: float = 0
+        self.test_name = test_name
+        self.semaphore = semaphore
+        self.start_time = start_time
 
     def run(self) -> None:
         """
@@ -45,8 +46,8 @@ class S_Process(Process):
         """
         try:
             start = time.perf_counter()
-            logger = S_Logger(self._test_name, self._start_time).get_logger()
-            logger.info('EXECUTION OF %s HAS STARTED.', self._test_name)
+            logger = S_Logger(self.test_name, self.start_time).get_logger()
+            logger.info('EXECUTION OF %s HAS STARTED.', self.test_name)
             Process.run(self)
             self._child_conn.send(None)
 
@@ -56,10 +57,12 @@ class S_Process(Process):
             self._child_conn.send((e, tb))
 
         finally:
-            logger.info('EXECUTION OF %s HAS ENDED.', self._test_name)
+            logger.info('EXECUTION OF %s HAS ENDED.', self.test_name)
             end = time.perf_counter()
-            logger.info(f'FINISHED in {round(end-start, 2)} second(s)')
-            self._semaphore.release()
+            self._duration = round(end-start, 2)
+            logger.info(f'FINISHED in {self._duration} second(s)')
+            self._child_conn.send(self._duration)
+            self.semaphore.release()
 
     @property
     def exception(self) -> TracebackException:
@@ -72,3 +75,15 @@ class S_Process(Process):
         if self._parent_conn.poll():
             self._exception = self._parent_conn.recv()
         return self._exception
+
+    @property
+    def duration(self) -> float:
+        """
+        Getter for time duration of the process (test exec).
+
+        Returns:
+            float: Time duration in seconds.
+        """
+        if self._parent_conn.poll():
+            self._duration = self._parent_conn.recv()
+        return self._duration

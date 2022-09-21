@@ -1,3 +1,4 @@
+from cgi import test
 import importlib
 
 from ast import Module
@@ -5,9 +6,8 @@ from typing import Tuple
 from source.utils import get_time
 from multiprocess import Semaphore
 from source.process import S_Process
-from source.search import create_tree
-from source.testcase import (Results,
-                             Status)
+from source.searcher import create_tree
+from source.testcase import Results, Status
 
 
 class Runner(object):
@@ -27,7 +27,7 @@ class Runner(object):
 
     def collect_tests(self) -> None:
         """
-        Method for future test discovery.
+        Method for future test selection.
         """
         pass
 
@@ -96,17 +96,33 @@ class Runner(object):
     def get_results(self) -> None:
         """
         Wait untill all processes are finished
-        and get test results.
+        and get the test session results.
         """
         for process, instance in self.processes:
             process.join()
 
+            instance.message = process.exception
+            instance.duration = process.duration
+
             if process.exception:
-                error, traceback = process.exception
-                instance.status = Status.FAIL
+                if isinstance(process.exception[0], AssertionError):
+                    instance.status = Status.FAIL
+                else:
+                    instance.status = Status.ERROR
 
             self.test_results.add(instance)
 
+    def show_results(self) -> None:
+        for test in self.test_results.tests:
+            print(test.name, test.status, test.duration)
+
 
 if __name__ == "__main__":
-    runner = Runner().run_tests()
+    runner = Runner()
+    # runner.collect_tests()
+    runner.run_tests()
+    runner.show_results()
+
+
+# wysylac zmienna z tablica z rezultatami do kadego procesu i niech proces sobie aktujalizuje po skonczeniu te zmienna
+
