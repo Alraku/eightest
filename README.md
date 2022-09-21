@@ -1,6 +1,6 @@
 # Sprinter Test Runner
 
-![alt text](https://i.im.ge/2022/09/13/1TiXtc.sprinter-logo-broad.png)
+![alt text](docs/images/sprinter-logo.png)
 -----
 ## Overview
 Sprinter is self made test runner written in Python that offers intuitive GUI in order to collect and execute tests suites.
