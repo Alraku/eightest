@@ -1,13 +1,12 @@
-from cgi import test
 import importlib
 
 from ast import Module
 from typing import Tuple
-from source.utils import get_time
 from multiprocess import Semaphore
+from source.testcase import Results
 from source.process import S_Process
+from source.utilities import get_time
 from source.searcher import create_tree
-from source.testcase import Results, Status
 
 
 class Runner(object):
@@ -101,20 +100,17 @@ class Runner(object):
         for process, instance in self.processes:
             process.join()
 
-            instance.message = process.exception
-            instance.duration = process.duration
-
-            if process.exception:
-                if isinstance(process.exception[0], AssertionError):
-                    instance.status = Status.FAIL
-                else:
-                    instance.status = Status.ERROR
+            instance.status = process.result[1]
+            instance.duration = process.result[2]
 
             self.test_results.add(instance)
 
     def show_results(self) -> None:
+        """
+        Print out results.
+        """
         for test in self.test_results.tests:
-            print(test.name, test.status, test.duration)
+            print(f'{test.name: <15}{test.status: <15} {test.duration}')
 
 
 if __name__ == "__main__":
@@ -122,6 +118,3 @@ if __name__ == "__main__":
     # runner.collect_tests()
     runner.run_tests()
     runner.show_results()
-
-
-# TODO Make result creation on the side of process and send it back by pipe to parent process.
