@@ -1,5 +1,4 @@
 from enum import Enum, auto
-from multiprocess import Pipe
 from typing import Optional, Tuple
 
 
@@ -55,10 +54,9 @@ class TestCase(metaclass=MetaTestCase):
 
     def __init__(self, name) -> None:
         self.name = name
-        self.duration: float = 0
+        self._duration: float = 0
         self.message: Optional[str]
         self._status: Status = Status.PASS
-        self._parent_conn, self._child_conn = Pipe()
 
     def before(self) -> None:
         """
@@ -99,13 +97,19 @@ class TestCase(metaclass=MetaTestCase):
 
     @property
     def status(self):
-        if self._parent_conn.poll():
-            self._status = self._parent_conn.recv()
         return self._status
 
     @status.setter
     def status(self, status: Status):
         self._status = status
+
+    @property
+    def duration(self):
+        return self._duration
+
+    @duration.setter
+    def duration(self, duration: float):
+        self._duration = duration
 
 
 class Results(object):
