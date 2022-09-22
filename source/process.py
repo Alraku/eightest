@@ -1,12 +1,11 @@
 import time
 
+from traceback import format_exc
 from source.logger import S_Logger
+from source.testcase import Status
 from multiprocess import (Semaphore,
                           Process,
                           Pipe)
-
-from traceback import (format_exc,
-                       TracebackException)
 
 
 class S_Process(Process):
@@ -29,61 +28,50 @@ class S_Process(Process):
 
         Args:
             test_name (str): From test module, starts with "test_*".
+            start_time (str): Test Session start time.
             semaphore (Semaphore): Manages an internal counter
                                    of available processes.
         """
         Process.__init__(self, *args, **kwargs)
         self._parent_conn, self._child_conn = Pipe()
-        self._exception = None
         self._duration: float = 0
         self.test_name = test_name
         self.semaphore = semaphore
         self.start_time = start_time
+        self.status = Status.PASS
 
     def run(self) -> None:
         """
-        Starts process along with logger.
+        Starts process along with logger. Sends
+        response back to parent process through Pipe.
         """
+        start = time.perf_counter()
+        log = S_Logger(self.test_name, self.start_time)
+
         try:
-            start = time.perf_counter()
-            logger = S_Logger(self.test_name, self.start_time).get_logger()
-            logger.info('EXECUTION OF %s HAS STARTED.', self.test_name)
+            log.start()
             Process.run(self)
-            self._child_conn.send(None)
 
         except Exception as e:
-            tb = format_exc()
-            logger.error(f'EXCEPTION OCCURRED: {tb}')
-            self._child_conn.send((e, tb))
+            log.exception(format_exc())
+
+            if isinstance(e, AssertionError):
+                self.status = Status.FAIL
+            else:
+                self.status = Status.ERROR
 
         finally:
-            logger.info('EXECUTION OF %s HAS ENDED.', self.test_name)
-            end = time.perf_counter()
-            self._duration = round(end-start, 2)
-            logger.info(f'FINISHED in {self._duration} second(s)')
-            self._child_conn.send(self._duration)
+            duration = log.end(start)
+            self._child_conn.send((self.test_name,
+                                   self.status,
+                                   duration))
             self.semaphore.release()
 
     @property
-    def exception(self) -> TracebackException:
+    def result(self) -> None:
         """
-        Getter for catched exceptions during process execution.
-
-        Returns:
-            TracebackException: Exception in readable form.
+        Result getter for parent process.
         """
         if self._parent_conn.poll():
-            self._exception = self._parent_conn.recv()
-        return self._exception
-
-    @property
-    def duration(self) -> float:
-        """
-        Getter for time duration of the process (test exec).
-
-        Returns:
-            float: Time duration in seconds.
-        """
-        if self._parent_conn.poll():
-            self._duration = self._parent_conn.recv()
-        return self._duration
+            self._result = self._parent_conn.recv()
+        return self._result

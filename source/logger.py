@@ -1,4 +1,5 @@
 import os
+import time
 import logging
 
 from pathlib import Path
@@ -9,7 +10,7 @@ from logging import (FileHandler,
 
 
 date_format = '%Y-%m-%d %H:%M:%S'
-text_format = '%(asctime)s [%(levelname)-5s] ' \
+text_format = '%(asctime)s %(levelname)-8s ' \
               'line:%(lineno)-2s of %(filename)-15s >> %(message)s'
 
 
@@ -82,23 +83,78 @@ class S_Logger(Logger):
     """
     Class that overrides standard Logging library.
     """
+    INFO = 20
+    ERROR = 40
 
     def __init__(self,
                  test_name: str,
                  start_time: str,
-                 log_name: str = 'main') -> None:
+                 log_name: str = 'main',
+                 *args, **kwargs) -> None:
         """
         Initialization of Logger instance.
 
         Args:
             test_name (str): From test module, starts with "test_*".
+            start_time (str): Test Session start time.
             log_name (str, optional): Logger name. Defaults to 'main'.
         """
+        Logger.__init__(self, log_name, *args, **kwargs)
         self.logger = logging.getLogger(log_name)
         self.logger.setLevel(logging.DEBUG)
-
         self.logger.addHandler(S_StreamHandler())
         self.logger.addHandler(S_FileHandler(test_name, start_time))
+
+        self.test_name = test_name
+        self.setLevel(logging.DEBUG)
+        self.addHandler(S_StreamHandler())
+        self.addHandler(S_FileHandler(test_name, start_time))
+
+    def start(self, *args) -> None:
+        """
+        Test start logging method.
+        """
+        if self.isEnabledFor(S_Logger.INFO):
+            self._log(S_Logger.INFO,
+                      f'THE EXECUTION OF {self.test_name} HAS STARTED.',
+                      args)
+
+    def end(self, start: time.time, *args) -> float:
+        """
+        Test end logging method. Computes duration
+        of test execution.
+
+        Args:
+            start (time.time): Test start time.
+
+        Returns:
+            float: Test execution duration.
+        """
+        end = time.perf_counter()
+        duration = round(end-start, 2)
+
+        if self.isEnabledFor(S_Logger.INFO):
+            self._log(S_Logger.INFO,
+                      f'THE EXECUTION OF {self.test_name} HAS ENDED.',
+                      args)
+
+            self._log(S_Logger.INFO, 
+                      f'FINISHED in {duration} second(s)',
+                      args)
+
+        return duration
+
+    def exception(self, traceback: str, *args) -> None:
+        """
+        Test exception logging method.
+
+        Args:
+            traceback (str): Full exception traceback in string from.
+        """
+        if self.isEnabledFor(S_Logger.ERROR):
+            self._log(S_Logger.ERROR,
+                      f'AN EXCEPTION OCCURRED: {traceback}',
+                      args)
 
     @classmethod
     def get_logger(cls) -> logging.Logger:
@@ -108,5 +164,4 @@ class S_Logger(Logger):
         Returns:
             logging.Logger: Logger instance.
         """
-        logger = logging.getLogger('main')
-        return logger
+        return logging.getLogger('main')
