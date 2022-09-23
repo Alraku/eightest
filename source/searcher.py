@@ -1,6 +1,7 @@
 import os
 import ast
 
+from typing import Tuple
 from source.exceptions import (NoTestsFoundError,
                                TestOutOfClassError)
 
@@ -70,6 +71,22 @@ def show_info(function_node: ast.FunctionDef) -> None:
             print(f"\tParameter name: {arg.arg}")
 
 
+def read_from_module(module: str) -> Tuple[ast.FunctionDef, ast.ClassDef]:
+    """
+    Opens module and gets all functions and classes.
+
+    Returns:
+        Tuple[ast.FunctionDef, ast.ClassDef]: Functions and classes.
+    """
+    with open(module, encoding='utf-8') as file:
+        node = ast.parse(file.read())
+
+    functions = [n for n in node.body if isinstance(n, ast.FunctionDef)]
+    classes = [n for n in node.body if isinstance(n, ast.ClassDef)]
+
+    return functions, classes
+
+
 def create_tree() -> list[dict]:
     """
     Searches for test functions in given test modules.
@@ -82,12 +99,7 @@ def create_tree() -> list[dict]:
 
     for module in get_test_modules():
 
-        with open(module, encoding='utf-8') as file:
-            node = ast.parse(file.read())
-
-        # Get all functions and classes from module.
-        functions = [n for n in node.body if isinstance(n, ast.FunctionDef)]
-        classes = [n for n in node.body if isinstance(n, ast.ClassDef)]
+        functions, classes = read_from_module(module)
 
         module = module.replace('\\', '.').replace('.py', '')
         dict = {}
@@ -96,17 +108,20 @@ def create_tree() -> list[dict]:
         # If test function detected raise exception.
         for function in functions:
             if function.name.startswith('test_'):
-                # dict[module].append(function.name)
                 raise TestOutOfClassError(function.name)
 
         # Search for tests in test classes.
         for class_ in classes:
             dict[module].append({class_.name: []})
             methods = [n for n in class_.body if isinstance(n, ast.FunctionDef)]
+            # TODO Create way of adding info about decorator to the dict.
 
             # Add methods to nested dictionary.
             for method in methods:
                 if method.name.startswith('test_'):
+                    if method.decorator_list:
+                        pass
+                        # print(method.decorator_list[0].id)
                     dict[module][-1][class_.name].append(method.name)
 
         test_tree.append(dict)
