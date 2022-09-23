@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+# v0.2.0 - (2022-09-22)
+
+This version contains improved logging capabilities along with better results gathering from processes.
+
+## Major changes:
+- Refactored Logger initialization, added new methods: start, end and exception.
+- Refactored Process module so it is more readable now.
+- Added result creation on the side of process and returning it back to runner.
+
+**Full Changelog**: https://github.com/Alraku/sprinter/compare/v0.1.0...v0.2.0
+
 # v0.1.0 - (2022-09-14)
 
 This is first pre-release version of Sprinter software. From now on all major changes will be listed in this changelog file.
