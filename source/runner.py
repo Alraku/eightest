@@ -102,6 +102,7 @@ class Runner(object):
 
             instance.status = process.result[1]
             instance.duration = process.result[2]
+            instance.reruns = process.result[3]
 
             self.test_results.add(instance)
 
@@ -110,7 +111,10 @@ class Runner(object):
         Print out results.
         """
         for test in self.test_results.tests:
-            print(f'{test.name: <15}{test.status: <15} {test.duration}')
+            print(f'{test.name: <15} \
+                    {test.status: <15} \
+                    {test.duration: <5} \
+                    {test.reruns}')
 
 
 if __name__ == "__main__":

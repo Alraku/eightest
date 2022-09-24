@@ -57,6 +57,7 @@ class TestCase(metaclass=MetaTestCase):
         self._duration: float = 0
         self.message: Optional[str]
         self._status: Status = Status.PASS
+        self._reruns: int = 0
 
     def before(self) -> None:
         """
@@ -110,6 +111,14 @@ class TestCase(metaclass=MetaTestCase):
     @duration.setter
     def duration(self, duration: float):
         self._duration = duration
+
+    @property
+    def reruns(self):
+        return self._reruns
+
+    @reruns.setter
+    def reruns(self, reruns: float):
+        self._reruns = reruns
 
 
 class Results(object):
