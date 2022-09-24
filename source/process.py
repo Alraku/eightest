@@ -45,27 +45,34 @@ class S_Process(Process):
         Starts process along with logger. Sends
         response back to parent process through Pipe.
         """
-        start = time.perf_counter()
         log = S_Logger(self.test_name, self.start_time)
+        NO_RUN = 0
+        MAX_RUNS = 3 # TODO Make that a config value
 
-        try:
-            log.start()
-            Process.run(self)
+        while NO_RUN < MAX_RUNS:
+            start = time.perf_counter()
+            NO_RUN += 1
 
-        except Exception as e:
-            log.exception(format_exc())
+            try:
+                log.start()
+                Process.run(self)
 
-            if isinstance(e, AssertionError):
-                self.status = Status.FAIL
+            except Exception as e:
+                log.exception(format_exc())
+                if isinstance(e, AssertionError):
+                    self.status = Status.FAIL
+                else:
+                    self.status = Status.ERROR
             else:
-                self.status = Status.ERROR
+                break
 
-        finally:
-            duration = log.end(start)
-            self._child_conn.send((self.test_name,
-                                   self.status,
-                                   duration))
-            self.semaphore.release()
+            finally:
+                duration = log.end(start)
+                self._child_conn.send((self.test_name,
+                                       self.status,
+                                       duration,
+                                       NO_RUN))
+                self.semaphore.release()
 
     @property
     def result(self) -> None:
