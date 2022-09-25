@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+# v0.2.1 - (2022-09-23)
+
+This version presents first implementation of custom decorators.
+
+## Major changes:
+- Added custom Decorator Template along with specific examples in [#2](https://github.com/Alraku/sprinter/pull/2)
+
+**Full Changelog**: https://github.com/Alraku/sprinter/compare/v0.2.0...v0.2.1
+
 # v0.2.0 - (2022-09-22)
 
 This version contains improved logging capabilities along with better results gathering from processes.
