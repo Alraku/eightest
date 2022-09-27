@@ -67,7 +67,7 @@ class S_Process(Process):
                 break
 
             finally:
-                duration = log.end(start)
+                duration = log.end(start, self.status)
                 self._child_conn.send((self.test_name,
                                        self.status,
                                        duration,

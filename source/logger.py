@@ -8,6 +8,8 @@ from logging import (FileHandler,
                      Formatter,
                      Logger)
 
+from source.testcase import Status
+
 
 date_format = '%Y-%m-%d %H:%M:%S'
 text_format = '%(asctime)s %(levelname)-8s ' \
@@ -119,7 +121,7 @@ class S_Logger(Logger):
                       f'THE EXECUTION OF {self.test_name} HAS STARTED.',
                       args)
 
-    def end(self, start: time.time, *args) -> float:
+    def end(self, start: time.time, status: Status, *args) -> float:
         """
         Test end logging method. Computes duration
         of test execution.
@@ -135,7 +137,8 @@ class S_Logger(Logger):
 
         if self.isEnabledFor(S_Logger.INFO):
             self._log(S_Logger.INFO,
-                      f'THE EXECUTION OF {self.test_name} HAS ENDED.',
+                      (f'THE EXECUTION OF {self.test_name}' +
+                       f'HAS ENDED WITH RESULT: {status.name}'),
                       args)
 
             self._log(S_Logger.INFO, 
