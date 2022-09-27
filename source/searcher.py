@@ -44,8 +44,8 @@ def get_test_modules() -> list[str]:
             # Look only for those that starts with:
             # FIXME Fix path filtering for UNIX.
             if file_name.startswith('test_'):
-                file_path = os.path.join(root, file_name)
-                test_files.append(file_path.replace('.\\', ''))
+                file_path = os.path.join(root[2:], file_name)
+                test_files.append(file_path)
 
     if test_files:
         return test_files
@@ -101,7 +101,7 @@ def create_tree() -> list[dict]:
 
         functions, classes = read_from_module(module)
 
-        module = module.replace('\\', '.').replace('.py', '')
+        module = module.replace(os.sep, '.').replace('.py', '')
         dict = {}
         dict[module] = []
 
