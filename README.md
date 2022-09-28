@@ -1,13 +1,13 @@
-# Sprinter Test Runner
+# Eightest Test Runner
 
-![alt text](docs/images/sprinter-logo.png)
+![alt text](docs/images/eightest-logo-wide.png)
 -----
 ## Overview
-Sprinter is self made test runner written in Python that offers intuitive GUI in order to collect and execute tests suites.
+Eightest is self made test runner written in Python that offers intuitive GUI in order to collect and execute tests suites.
  
 ## Installation
 
-For the moment being Sprinter does not require any installation. Though it has some dependent libraries needed for proper work.
+For the moment being Eightest does not require any installation. Though it has some dependent libraries needed for proper work.
 
 ## Features:
         
@@ -22,7 +22,7 @@ For the moment being Sprinter does not require any installation. Though it has s
 
 Here is an example of simple Test Suite:
 ```python
-from source.testcase import TestCase
+from eightest import TestCase
 
 class TestString(TestCase):
 

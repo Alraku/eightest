@@ -1,8 +1,8 @@
 import time
 
 from traceback import format_exc
-from source.logger import S_Logger
-from source.testcase import Status
+from eightest.logger import S_Logger
+from eightest.testcase import Status
 from multiprocess import (Semaphore,
                           Process,
                           Pipe)
@@ -14,7 +14,6 @@ class S_Process(Process):
     This class is responsible for managing and running
     everything what is related with running tests in Process.
     """
-
     def __init__(self,
                  test_name: str,
                  start_time: str,
@@ -47,7 +46,7 @@ class S_Process(Process):
         """
         log = S_Logger(self.test_name, self.start_time)
         NO_RUN = 0
-        MAX_RUNS = 3 # TODO Make that a config value
+        MAX_RUNS = 3  # TODO Make that a config value
 
         while NO_RUN < MAX_RUNS:
             start = time.perf_counter()
@@ -67,7 +66,7 @@ class S_Process(Process):
                 break
 
             finally:
-                duration = log.end(start)
+                duration = log.end(start, self.status)
                 self._child_conn.send((self.test_name,
                                        self.status,
                                        duration,
