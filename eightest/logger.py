@@ -8,7 +8,7 @@ from logging import (FileHandler,
                      Formatter,
                      Logger)
 
-from source.testcase import Status
+from eightest.testcase import Status
 
 
 date_format = '%Y-%m-%d %H:%M:%S'
@@ -141,7 +141,7 @@ class S_Logger(Logger):
                        f'HAS ENDED WITH RESULT: {status.name}'),
                       args)
 
-            self._log(S_Logger.INFO, 
+            self._log(S_Logger.INFO,
                       f'FINISHED in {duration} second(s)',
                       args)
 

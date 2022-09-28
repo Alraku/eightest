@@ -3,10 +3,10 @@ import importlib
 from ast import Module
 from typing import Tuple
 from multiprocess import Semaphore
-from source.testcase import Results
-from source.process import S_Process
-from source.utilities import get_time
-from source.searcher import create_tree
+from eightest.testcase import Results
+from eightest.process import S_Process
+from eightest.utilities import get_time
+from eightest.searcher import create_tree
 
 
 class Runner(object):

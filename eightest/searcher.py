@@ -2,8 +2,8 @@ import os
 import ast
 
 from typing import Tuple
-from source.exceptions import (NoTestsFoundError,
-                               TestOutOfClassError)
+from eightest.exceptions import (NoTestsFoundError,
+                                 TestOutOfClassError)
 
 
 def find_folder_path() -> str:
