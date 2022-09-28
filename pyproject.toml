@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling", "dill>=0.3.5.1", "multiprocess>=0.70.13"]
+requires = ["hatchling", "dill", "multiprocess"]
 build-backend = "hatchling.build"
 
 [project]
-name = "alsprinter"
-version = "0.2.3"
+name = "eightest"
+version = "0.2.2"
 authors = [
   { name="Alraku (Krzysztof Rakowski)", email="ekoalraku@gmail.com" },
 ]
@@ -24,5 +24,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/Alraku/sprinter"
-"Bug Tracker" = "https://github.com/Alraku/sprinter/issues"
+"Homepage" = "https://github.com/Alraku/eightest"
+"Bug Tracker" = "https://github.com/Alraku/eightest/issues"
