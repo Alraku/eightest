@@ -118,7 +118,8 @@ class S_Logger(Logger):
         """
         if self.isEnabledFor(S_Logger.INFO):
             self._log(S_Logger.INFO,
-                      f'THE EXECUTION OF {self.test_name} HAS STARTED.',
+                      f'THE EXECUTION OF {self.test_name.upper()} ' +
+                      'HAS STARTED.',
                       args)
 
     def end(self, start: time.time, status: Status, *args) -> float:
@@ -137,12 +138,12 @@ class S_Logger(Logger):
 
         if self.isEnabledFor(S_Logger.INFO):
             self._log(S_Logger.INFO,
-                      (f'THE EXECUTION OF {self.test_name}' +
+                      (f'THE EXECUTION OF {self.test_name.upper()} ' +
                        f'HAS ENDED WITH RESULT: {status.name}'),
                       args)
 
             self._log(S_Logger.INFO,
-                      f'FINISHED in {duration} second(s)',
+                      f'FINISHED IN {duration} SECOND(S)',
                       args)
 
         return duration
