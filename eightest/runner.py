@@ -1,5 +1,5 @@
+import os
 import importlib
-import multiprocess
 
 from ast import Module
 from typing import Tuple
@@ -7,6 +7,7 @@ from multiprocess import Semaphore
 from eightest.process import S_Process
 from eightest.utilities import get_time
 from eightest.searcher import create_tree
+from eightest.utilities import load_env_file
 from eightest.testcase import (Results,
                                Status)
 
@@ -22,6 +23,7 @@ class Runner(object):
         Initialization of processes list
         and generating tests' hierarchy.
         """
+        load_env_file()
         self.processes: list = []
         self.test_tree: list[dict] = create_tree()
         self.test_results = Results()
@@ -64,7 +66,7 @@ class Runner(object):
         """
         concurrency = None
         start_time = get_time()
-        NO_SYSTEM_CPU = multiprocess.cpu_count()  # TODO Make that conf var
+        NO_SYSTEM_CPU = int(os.getenv('CPU_COUNT'))
 
         if concurrency is None:
             concurrency = max(NO_SYSTEM_CPU - 1, 1)
@@ -110,7 +112,7 @@ class Runner(object):
         Wait untill all processes are finished
         and get the test session results.
         """
-        TIMEOUT = 10  # TODO Make this global var
+        TIMEOUT = int(os.getenv('PROCESS_TIMEOUT'))
 
         for process, instance in self.processes:
             process.join(TIMEOUT)
