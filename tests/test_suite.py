@@ -1,7 +1,6 @@
 import time
 
-from source.logger import S_Logger
-from source.testcase import TestCase
+from eightest import S_Logger, TestCase
 
 logger = S_Logger.get_logger()
 
