@@ -1,11 +1,11 @@
 import time
 
-from source.testcase import TestCase
+from eightest import TestCase
 
 
 class TestStrings(TestCase):
 
     def test_upper(self):
         text = 'text'
-        time.sleep(3)
+        time.sleep(10)
         assert text.upper() == 'TEXT'
