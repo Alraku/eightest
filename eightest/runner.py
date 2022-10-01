@@ -1,12 +1,14 @@
 import importlib
+import multiprocess
 
 from ast import Module
 from typing import Tuple
 from multiprocess import Semaphore
-from eightest.testcase import Results
 from eightest.process import S_Process
 from eightest.utilities import get_time
 from eightest.searcher import create_tree
+from eightest.testcase import (Results,
+                               Status)
 
 
 class Runner(object):
@@ -60,12 +62,16 @@ class Runner(object):
         Creates independent processes and appends
         them into the pool of processes.
         """
-        # Create a pool of processes by defined number
-        # ? NO_SYSTEM_CPU = multiprocess.cpu_count()
-        concurrency = 2
-        semaphore = Semaphore(concurrency)
+        concurrency = None
         start_time = get_time()
+        NO_SYSTEM_CPU = multiprocess.cpu_count()  # TODO Make that conf var
 
+        if concurrency is None:
+            concurrency = max(NO_SYSTEM_CPU - 1, 1)
+            if concurrency == 1:
+                raise ValueError('Not enough cores to parallelise.')
+
+        semaphore = Semaphore(concurrency)
         # For each module in test hierarchy.
         for module in self.test_tree:
             module, mod_name, mod_members = self.importer(module)
@@ -92,13 +98,26 @@ class Runner(object):
 
         self.get_results()
 
+    def terminate_process(self, process, instance):
+        process.terminate()
+        instance.status = Status.ERROR
+        instance.duration = 10
+        instance.reruns = 1
+        self.test_results.add(instance)
+
     def get_results(self) -> None:
         """
         Wait untill all processes are finished
         and get the test session results.
         """
+        TIMEOUT = 10  # TODO Make this global var
+
         for process, instance in self.processes:
-            process.join()
+            process.join(TIMEOUT)
+
+            if process.is_alive():
+                self.terminate_process(process, instance)
+                continue
 
             instance.status = process.result[1]
             instance.duration = process.result[2]
