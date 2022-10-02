@@ -32,7 +32,6 @@ def load_env_file(override=False) -> None:
 
         key, value = line.split("=", maxsplit=1)
         dotenv_vars.setdefault(key.strip(), value.strip())
-        print(dotenv_vars)
 
     if override:
         env.update(dotenv_vars)
