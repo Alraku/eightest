@@ -7,9 +7,11 @@ from multiprocess import Semaphore
 from eightest.process import S_Process
 from eightest.utilities import get_time
 from eightest.searcher import create_tree
-from eightest.utilities import load_env_file
 from eightest.testcase import (Results,
                                Status)
+
+from eightest.utilities import (load_env_file,
+                                set_cpu_count)
 
 
 class Runner(object):
@@ -23,6 +25,7 @@ class Runner(object):
         Initialization of processes list
         and generating tests' hierarchy.
         """
+        set_cpu_count()
         load_env_file()
         self.processes: list = []
         self.test_tree: list[dict] = create_tree()

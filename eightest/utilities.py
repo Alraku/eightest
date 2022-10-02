@@ -17,8 +17,12 @@ def set_cpu_count() -> None:
 
 
 def load_env_file(override=False) -> None:
-    with open(DOTENV_PATH) as file_obj:
-        lines = file_obj.read().splitlines()
+    try:
+        with open(DOTENV_PATH) as file_obj:
+            lines = file_obj.read().splitlines()
+
+    except FileNotFoundError:
+        raise FileNotFoundError('Could not config.env file.')
 
     dotenv_vars = {}
     for line in lines:
@@ -27,12 +31,11 @@ def load_env_file(override=False) -> None:
             continue
 
         key, value = line.split("=", maxsplit=1)
-        dotenv_vars.setdefault(key, value)
+        dotenv_vars.setdefault(key.strip(), value.strip())
+        print(dotenv_vars)
 
     if override:
         env.update(dotenv_vars)
     else:
         for key, value in dotenv_vars.items():
             env.setdefault(key, value)
-
-    set_cpu_count()
