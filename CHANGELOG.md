@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+# v0.3.0 - (2022-10-01)
+
+This version brings improvements in test running and small fixes.
+
+## Major Improvements:
+* Added rerun functionality in https://github.com/Alraku/eightest/pull/3
+* Changelog update in https://github.com/Alraku/eightest/pull/4
+* Refactored project file structure, added .toml, .ini files in https://github.com/Alraku/eightest/pull/6
+* Added timeout feature in https://github.com/Alraku/eightest/pull/8
+
+## Bug Fixed:
+* Fixed lacking space in messages in https://github.com/Alraku/eightest/pull/7
+* Fixed no os-dependent path creation in https://github.com/Alraku/eightest/pull/5
+
+**Full Changelog**: https://github.com/Alraku/eightest/compare/v0.2.1...v0.2.2
+
 # v0.2.1 - (2022-09-23)
 
 This version presents first implementation of custom decorators.

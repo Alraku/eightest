@@ -1,3 +1,4 @@
+import os
 import time
 
 from traceback import format_exc
@@ -45,10 +46,10 @@ class S_Process(Process):
         response back to parent process through Pipe.
         """
         log = S_Logger(self.test_name, self.start_time)
+        MAX_RERUNS = int(os.getenv('MAX_RERUNS'))
         NO_RUN = 0
-        MAX_RUNS = 3  # TODO Make that a config value
 
-        while NO_RUN < MAX_RUNS:
+        while NO_RUN < MAX_RERUNS:
             start = time.perf_counter()
             NO_RUN += 1
 
