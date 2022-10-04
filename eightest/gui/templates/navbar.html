@@ -1,12 +1,26 @@
-{% load static %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-<header class="header header--loggedIn">
-    <div class="container">
-        <a href="{% url 'home' %}" class="header__logo">
-            <h1>Eightest</h1>
+{% load static %}
+<script src="{% static 'scripts/navbar.js' %}"></script>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+<div class="container"></div>
+    <nav class="navbar navbar-expand-custom navbar-mainbg">
+        <a class="navbar-brand navbar-logo" href="{% url 'home' %}">
+            <h1 class="header__logo">Eightest</h1>
         </a>
-
-        <nav class="header__menu">
-
-        </nav>
-    </div>
-</header>
+        <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars text-white"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% static 'scripts/navbar.js' %}"><i class="fas fa-tachometer-alt"></i></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="test()"><i class="far fa-address-book"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="test()"><i class="far fa-clone"></i></a>
+                </li>              
+            </ul>
+        </div>
+    </nav>
+</div>
