@@ -20,7 +20,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'eightest.gui.apps'
+    'eightest.gui.apps',
+    "django_static_fontawesome"
 ]
 
 MIDDLEWARE = [
