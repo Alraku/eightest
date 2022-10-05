@@ -1,0 +1,13 @@
+body{
+    background-color: rgb(24, 23, 23);
+}
+
+.home {
+    color: gray;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-weight: bold;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
