@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;800&display=swap');
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+}
+
+.navbar{
+    background-color: #1b3039;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+    padding: 50px 50px;
+}
+
+.navbar .logo{
+    cursor: pointer;
+    display: flex;
+}
+
+.navbar .logo img{
+    height: 40px;
+    width: auto;
+}
+
+
+.navbar .nav-links a{
+    font-size: 700;
+    color: #eceff1;
+    text-decoration: none;    
+}
+
+.navbar .nav-links li a:hover{
+    color: #ffbc0e;
+}
+
+.navbar .btn button{
+    color: #1b3039;
+    border: none;
+    cursor: pointer;
+    padding: 9px 40px;
+    background: #eceff1;
+    transition: all 0.3s ease 0s;
+    font-weight: 700;
+    border-radius: 50px;
+}
+
+.navbar .btn button:hover{
+    background-color: #e2f1f8;
+    transform: scale(1.1);
+}
+
+.center {
+    display: flex;
+    align-items: center;
+}
+
+.center .play-pause-button button {
+    color: #1b3039;
+    border: none;
+    cursor: pointer;
+    padding: 9px 12px 9px 15px;
+    background: #eceff1;
+    transition: all 0.3s ease 0s;
+    font-weight: 700;
+    border-radius: 30px;
+}
+
+.center .play-pause-button button:hover{
+    background-color: #e2f1f8;
+    transform: scale(1.1);
+}
+
+.progress-bar progress { 
+    /* Turns off default styling */ 
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    width: 500px;  
+    height: 35px;
+    padding: 0 15px 0 15px
+}  
+
+.progress-bar progress::-webkit-progress-bar {
+    background-color: #e2f1f8;
+    border-radius: 50px;
+    color: aqua;
+}
+
+progress::-webkit-progress-value {
+    background-color: rgb(35, 175, 56);
+    border-radius: 50px;
+}
+
+.tests-text {
+    color: #1b3039;
+    border: none;
+    padding: 3px 10px;
+    background: #eceff1;
+    font-weight: 700;
+    border-radius: 50px;
+    font-size: medium;
+}
+
