@@ -141,7 +141,7 @@ class Runner(object):
                     {test.reruns}')
 
 
-if __name__ == "__main__":
+def main():
     runner = Runner()
     # runner.collect_tests()
     runner.run_tests()

@@ -2,6 +2,7 @@ import os
 import ast
 
 from typing import Tuple
+from eightest.utilities import ROOT_DIR
 from eightest.exceptions import (NoTestsFoundError,
                                  TestOutOfClassError)
 
@@ -42,7 +43,6 @@ def get_test_modules() -> list[str]:
                 continue
 
             # Look only for those that starts with:
-            # FIXME Fix path filtering for UNIX.
             if file_name.startswith('test_'):
                 file_path = os.path.join(root[2:], file_name)
                 test_files.append(file_path)
@@ -78,7 +78,7 @@ def read_from_module(module: str) -> Tuple[ast.FunctionDef, ast.ClassDef]:
     Returns:
         Tuple[ast.FunctionDef, ast.ClassDef]: Functions and classes.
     """
-    with open(module, encoding='utf-8') as file:
+    with open(os.path.join(ROOT_DIR, module), encoding='utf-8') as file:
         node = ast.parse(file.read())
 
     functions = [n for n in node.body if isinstance(n, ast.FunctionDef)]
