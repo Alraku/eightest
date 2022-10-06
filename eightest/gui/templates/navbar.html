@@ -2,12 +2,14 @@
 <nav class="navbar">
 
     <div class="logo">
-        <img src="{% static 'images/eightest-logo.png' %}" alt="logo">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/eightest-logo.png' %}" alt="logo">
+        </a>
     </div>
 
     <div class="center">
 
-        <a class="play-pause-button" href="#">
+        <a class="play-pause-button" href="{% url 'function' %}">
             <button>
                 <i class="fas fa-play"></i>
             </button>
@@ -24,7 +26,7 @@
 
     <div>    
    
-        <a class="btn" href="#">
+        <a class="btn">
             <button>
                 <i class="fas fa-cog"></i>
                 Settings

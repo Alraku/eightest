@@ -86,7 +86,7 @@
 }  
 
 .progress-bar progress::-webkit-progress-bar {
-    background-color: #e2f1f8;
+    background-color: rgb(24, 23, 23);
     border-radius: 50px;
     color: aqua;
 }
