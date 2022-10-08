@@ -1,3 +1,4 @@
+from cgi import test
 import os
 import importlib
 
@@ -14,6 +15,58 @@ from eightest.utilities import (load_env_file,
                                 set_cpu_count)
 
 
+class TaskList(object):
+
+    class Result(object):
+
+        def __init__(self,
+                     status: Status = Status.NOTRUN,
+                     message: str | None = None
+                     ) -> None:
+            self.status = status
+            self.message = message
+            self.duration = None
+            self.retries: int = 1
+
+    class Task(object):
+
+        def __init__(self, process, instance, result) -> None:
+            self.process = process
+            self.instance = instance
+            self.result = result
+
+        def run(self) -> None:
+            self.process.start()
+
+        def join(self, timeout) -> None:
+            self.process.join(timeout)
+
+            if self.process.is_alive():
+                self.terminate()
+
+        def terminate(self) -> None:
+            self.process.terminate()
+            self.result.status = Status.ERROR
+            self.result.duration = 10
+
+        def set_result(self) -> None:
+            if self.result.status == Status.ERROR:
+                return
+            self.result.status = self.process.result[1]
+            self.result.duration = self.process.result[2]
+            self.result.retries = self.process.result[3]
+
+    def __init__(self) -> None:
+        self.tasks = []
+
+    def add(self, process, instance) -> None:
+        self.tasks.append(self.Task(process, instance, self.Result()))
+
+    def info(self, index) -> str:
+        task = self.tasks[index]
+        return f"<Process: {task.process}, Instance: {task.instance}, Result: {task.result.status}, {task.result.duration}, {task.result.retries}>"
+
+
 class Runner(object):
     """
     Class responsible for creating processes in which
@@ -27,7 +80,8 @@ class Runner(object):
         """
         set_cpu_count()
         load_env_file()
-        self.processes: list = []
+        # self.processes: list = []
+        self.tasks = TaskList()
         self.test_tree: list[dict] = create_tree()
         self.test_results = Results()
 
@@ -62,7 +116,7 @@ class Runner(object):
 
         return mod, mod_name, mod_members
 
-    def run_tests(self) -> None:
+    def dispatch_tasks(self) -> None:
         """
         Creates independent processes and appends
         them into the pool of processes.
@@ -76,7 +130,7 @@ class Runner(object):
             if concurrency == 1:
                 raise ValueError('Not enough cores to parallelise.')
 
-        semaphore = Semaphore(concurrency)
+        semaphore = Semaphore(2)
         # For each module in test hierarchy.
         for module in self.test_tree:
             module, mod_name, mod_members = self.importer(module)
@@ -89,7 +143,7 @@ class Runner(object):
                 for test_name in test_class[next(iter(test_class.keys()))]:
                     _test_instance = _class(test_name)
 
-                    semaphore.acquire()
+                    # semaphore.acquire()
 
                     process = S_Process(
                             target=getattr(_class, test_name),
@@ -98,10 +152,27 @@ class Runner(object):
                             start_time=start_time,
                             semaphore=semaphore
                     )
-                    process.start()
-                    self.processes.append((process, _test_instance))
+                    # process.start()
+                    self.tasks.add(process, _test_instance)
+                    # self.processes.append((process, _test_instance))
 
-        self.get_results()
+        # self.get_results()
+
+    def run_tests(self) -> None:
+
+        for task in self.tasks.tasks:
+            task.run()
+
+        TIMEOUT = int(os.getenv('PROCESS_TIMEOUT'))
+
+        for task in self.tasks.tasks:
+            task.join(TIMEOUT)
+            task.set_result()
+
+    def new_results(self) -> None:
+
+        for index in range(len(self.tasks.tasks)):
+            print(self.tasks.info(index))
 
     def terminate_process(self, process, instance):
         process.terminate()
@@ -142,7 +213,15 @@ class Runner(object):
 
 
 def main():
+    from pprint import pprint
     runner = Runner()
     # runner.collect_tests()
+    runner.dispatch_tasks()
     runner.run_tests()
-    runner.show_results()
+    runner.new_results()
+    #pprint(runner.tasks.tasks)
+    # runner.show_results()
+
+
+if __name__ == "__main__":
+    main()
