@@ -8,11 +8,13 @@
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'styles/navbar.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'styles/home.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/footer.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/all.min.css' %}" />
     </head>
     <body>
         {% include 'navbar.html' %}
         {% block content %}
         {% endblock %}
+        {% include 'footer.html' %}
     </body>
 </html>
