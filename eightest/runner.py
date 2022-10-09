@@ -108,6 +108,9 @@ class TaskList(object):
         task = self.tasks[index]
         return f"<Process: {task.process}, Instance: {task.instance}, Result: {task.result.status}, {task.result.duration}, {task.result.retries}>"
 
+from eightest.utilities import (load_env_file,
+                                set_cpu_count)
+
 
 class Runner(object):
     """

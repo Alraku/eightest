@@ -7,14 +7,15 @@ Eightest is self made test runner written in Python that offers intuitive GUI in
  
 ## Installation
 
-For the moment being Eightest does not require any installation. Though it has some dependent libraries needed for proper work.
+In order to install use this command:
+```pip install eightest```
 
 ## Features:
         
 - **(WIP)** Graphical User Interface 
 - Parallel execution of tests
 - Test execution time 
-- **(WIP)** Custom tags 
+- Custom tags 
 - **(WIP)** Automatic scheduler 
 - **(WIP)** E-mail notifications 
 
