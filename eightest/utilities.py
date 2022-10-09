@@ -1,9 +1,12 @@
 import os
+import pathlib
 import multiprocess
 
 from datetime import datetime
 
-DOTENV_PATH = os.path.join(os.getcwd(), 'config.env')
+ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent
+
+DOTENV_PATH = os.path.join(ROOT_DIR, 'config.env')
 env = os.environ
 
 

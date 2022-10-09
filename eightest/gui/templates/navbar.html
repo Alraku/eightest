@@ -2,34 +2,45 @@
 <nav class="navbar">
 
     <div class="logo">
-        <img src="{% static 'images/eightest-logo.png' %}" alt="logo">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/eightest-logo.png' %}" alt="logo">
+        </a>
     </div>
 
     <div class="center">
-
-        <a class="play-pause-button" href="#">
-            <button>
-                <i class="fas fa-play"></i>
-            </button>
-        </a>
-
-        <div class="progress-bar">
-            <progress value="67" max="100"></progress>  
-        </div>
-
-        <a class="tests-text">
-            45/63
-        </a>
+        <ul class="nav-links">
+            <li>
+                <a>DASHBOARD</a>
+            </li>
+            <li>
+                <a>HISTORY</a>
+            </li>
+            <li>
+                <a>SCHEDULER</a>
+            </li>
+        </ul>
     </div>
 
-    <div>    
-   
-        <a class="btn" href="#">
+    <div class="right">    
+        <a class="button">
             <button>
                 <i class="fas fa-cog"></i>
                 Settings
             </button>
         </a>
-
     </div>
 </nav>
+<!-- 
+<a class="play-pause-button" href="{% url 'function' %}">
+    <button>
+        <i class="fas fa-play"></i>
+    </button>
+</a>
+
+<div class="progress-bar">
+    <progress value="67" max="100"></progress>  
+</div>
+
+<a class="tests-text">
+    45/63
+</a> -->

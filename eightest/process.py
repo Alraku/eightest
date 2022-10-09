@@ -20,7 +20,8 @@ class S_Process(Process):
                  start_time: str,
                  semaphore: Semaphore,
                  *args,
-                 **kwargs) -> None:
+                 **kwargs
+                 ) -> None:
         """
         Initialization of Process instance.
         Creates multiprocess.Pipe which allows to
@@ -38,13 +39,14 @@ class S_Process(Process):
         self.test_name = test_name
         self.semaphore = semaphore
         self.start_time = start_time
-        self.status = Status.PASS
+        self.status = Status.PASSED
 
     def run(self) -> None:
         """
         Starts process along with logger. Sends
         response back to parent process through Pipe.
         """
+        self.semaphore.acquire()
         log = S_Logger(self.test_name, self.start_time)
         MAX_RERUNS = int(os.getenv('MAX_RERUNS'))
         NO_RUN = 0
@@ -60,7 +62,7 @@ class S_Process(Process):
             except Exception as e:
                 log.exception(format_exc())
                 if isinstance(e, AssertionError):
-                    self.status = Status.FAIL
+                    self.status = Status.FAILED
                 else:
                     self.status = Status.ERROR
             else:

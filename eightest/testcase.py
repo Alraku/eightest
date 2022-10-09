@@ -41,9 +41,10 @@ class Status(Enum):
     """
     The status of a given test or test session.
     """
-
-    PASS = auto()
-    FAIL = auto()
+    RUNNING = auto()
+    NOTRUN = auto()
+    PASSED = auto()
+    FAILED = auto()
     ERROR = auto()
 
 
@@ -56,7 +57,7 @@ class TestCase(metaclass=MetaTestCase):
         self.name = name
         self._duration: float = 0
         self.message: Optional[str]
-        self._status: Status = Status.PASS
+        self._status: Status = Status.PASSED
         self._reruns: int = 0
 
     def before(self) -> None:
@@ -88,7 +89,7 @@ class TestCase(metaclass=MetaTestCase):
         """
         Indicate this test failed.
         """
-        self._update(Status.FAIL, message)
+        self._update(Status.FAILED, message)
 
     def error(self, message: str | None) -> None:
         """
@@ -122,23 +123,12 @@ class TestCase(metaclass=MetaTestCase):
 
 
 class Results(object):
-    """
-    Overall results of a test run.
-    """
-
-    def __init__(self,
-                 status: Status = Status.PASS,
-                 message: str | None = None
-                 ) -> None:
-        self.status = status
-        self.message = message
-        self.tests = []
-
+   
     def add(self, test: TestCase) -> None:
         """
         Add a Test to the list of tests.
         """
-        if test.status is Status.FAIL:
+        if test.status is Status.FAILED:
             self.fail()
 
         self.tests.append(test)
@@ -147,7 +137,7 @@ class Results(object):
         """
         Indicate the test run had at least one failure.
         """
-        self.status = Status.FAIL
+        self.status = Status.FAILED
 
     def error(self, message: str | None = None) -> None:
         """
