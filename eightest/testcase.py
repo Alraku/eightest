@@ -123,18 +123,7 @@ class TestCase(metaclass=MetaTestCase):
 
 
 class Results(object):
-    """
-    Overall results of a test run.
-    """
-
-    def __init__(self,
-                 status: Status = Status.PASSED,
-                 message: str | None = None
-                 ) -> None:
-        self.status = status
-        self.message = message
-        self.tests = []
-
+   
     def add(self, test: TestCase) -> None:
         """
         Add a Test to the list of tests.
