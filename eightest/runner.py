@@ -1,19 +1,20 @@
 import os
+import time
 import importlib
 
 from ast import Module
 from typing import Tuple
 from multiprocess import Semaphore
-from eightest.testcase import Status
 from eightest.process import S_Process
 from eightest.utilities import get_time
 from eightest.searcher import create_tree
+from eightest.testcase import Status, TestCase
 
 from eightest.utilities import (load_env_file,
                                 set_cpu_count)
 
 
-class TaskList(object):
+class Tasks(object):
     """
     Wraps independent Task objects into list.
     """
@@ -26,74 +27,20 @@ class TaskList(object):
                      status: Status = Status.NOTRUN,
                      message: str | None = None
                      ) -> None:
-            self.status: Status = status
-            self.message: str = message
+            self.status = status
+            self.message = message
+            self.test_name: str = None
             self.duration: float = None
             self.retries: int = 1
-
-    class Task(object):
-        """
-        Single Task that contains several objects:
-        - process object
-        - test instance object
-        - test result object
-
-        Performs operations on process during test exec.
-        """
-        def __init__(self, process, instance, result) -> None:
-            self.process = process
-            self.instance = instance
-            self.result = result
-
-        def run(self) -> None:
-            """
-            Starts process if not running.
-            """
-            self.process.start()
-
-        def join(self, timeout) -> None:
-            """
-            Blocks and waits until the process whose
-            join() method is called terminates.
-            If process is still alive after timeout,
-            it is being terminated by force.
-
-            Args:
-                timeout (int): Time after which
-                the process is to be terminated.
-            """
-            self.process.join(timeout)
-
-            if self.process.is_alive():
-                self.terminate(timeout)
-
-        def terminate(self, timeout) -> None:
-            """
-            Terminates process by force.
-            """
-            self.process.terminate()
-            self.result.status = Status.ERROR
-            self.result.duration = f"TIMEOUT({timeout}s)"
-
-        def set_result(self) -> None:
-            """
-            Gets result from process object of finished test
-            and sets to internal results object.
-            """
-            if self.result.status == Status.ERROR:
-                return
-
-            self.result.status = self.process.result[1]
-            self.result.duration = self.process.result[2]
-            self.result.retries = self.process.result[3]
 
     def __init__(self) -> None:
         """
         List of task objects.
         """
-        self.tasks = []
+        self.all_tasks = list()
+        self.completed = list()
 
-    def add(self, process, instance) -> None:
+    def add(self, process: S_Process, instance: TestCase) -> None:
         """
         Adds a process with its associated
         instance to the list, sets Result object.
@@ -102,14 +49,82 @@ class TaskList(object):
             process (S_Process): Process object.
             instance (TestCase): Test instance.
         """
-        self.tasks.append(self.Task(process, instance, self.Result()))
+        task = Task(process, instance, Tasks.Result())
+        self.all_tasks.append(task)
 
-    def info(self, index) -> str:
-        task = self.tasks[index]
-        return f"<Process: {task.process}, Instance: {task.instance}, Result: {task.result.status}, {task.result.duration}, {task.result.retries}>"
+    def complete(self, task: 'Task') -> None:
+        self.completed.append(task)
+        self.all_tasks.remove(task)
 
-from eightest.utilities import (load_env_file,
-                                set_cpu_count)
+    def info(self) -> str:
+        output = list()
+        for task in self.completed:
+            output.append(f"<Process: {task.process}" +
+                          f" Instance: {task.instance}" + 
+                          f" Result: {task.result.status}" +
+                          f" Duration: {task.result.duration}" +
+                          f" Retries: {task.result.retries}>")
+        return output
+
+
+class Task(object):
+    """
+    Single Task that contains several objects:
+    - process object
+    - test instance object
+    - test result object
+
+    Performs operations on process during test exec.
+    """
+    def __init__(self,
+                 process: S_Process,
+                 instance: TestCase,
+                 result: Tasks
+                 ) -> None:
+        self.process = process
+        self.instance = instance
+        self.result = result
+        self.duration = None
+
+    def run(self) -> None:
+        """
+        Starts process if not running.
+        """
+        self.process.start()
+        self.duration = time.perf_counter()
+        self.result.status = Status.RUNNING
+
+    def join(self, timeout: int = 0) -> None:
+        """
+        Blocks and waits until the process whose
+        join() method is called terminates.
+        If process is still alive after timeout,
+        it is being terminated by force.
+
+        Args:
+            timeout (int): Time after which
+            the process is to be terminated.
+        """
+        self.process.join(timeout)
+        self.set_result()
+
+    def terminate(self, timeout: int) -> None:
+        """
+        Terminates process by force.
+        """
+        self.process.terminate()
+        self.result.status = Status.ERROR
+        self.result.duration = f"TIMEOUT({timeout}s)"
+
+    def set_result(self) -> None:
+        """
+        Gets result from process object of finished test
+        and sets to internal results object.
+        """
+        (self.result.test_name,
+         self.result.status,
+         self.result.duration,
+         self.result.retries) = self.process.result
 
 
 class Runner(object):
@@ -125,8 +140,7 @@ class Runner(object):
         """
         set_cpu_count()
         load_env_file()
-        # self.processes: list = []
-        self.tasks = TaskList()
+        self.tasks = Tasks()
         self.test_tree: list[dict] = create_tree()
 
     def collect_tests(self) -> None:
@@ -191,29 +205,39 @@ class Runner(object):
                             target=getattr(_class, test_name),
                             args=(_test_instance,),
                             test_name=test_name,
-                            start_time=start_time,
+                            session_time=start_time,
                             semaphore=semaphore
                     )
-
                     self.tasks.add(process, _test_instance)
 
     def run_tests(self) -> None:
         TIMEOUT = int(os.getenv('PROCESS_TIMEOUT'))
 
-        for task in self.tasks.tasks:
+        for task in self.tasks.all_tasks:
             task.run()
 
-        for task in self.tasks.tasks:
-            task.join(TIMEOUT)
-            task.set_result()
+        while self.tasks.all_tasks:
+
+            for task in self.tasks.all_tasks:
+                if not task.process.is_alive():
+                    task.join()
+                    self.tasks.complete(task)
+
+                if task.result.status.name == "RUNNING":
+                    duration = time.perf_counter() - task.duration - 0.25
+
+                    if (duration > TIMEOUT):
+                        task.terminate(TIMEOUT)
+                        self.tasks.complete(task)
+
+            time.sleep(0.2)
 
     def get_results(self) -> None:
         """
         Wait untill all processes are finished
         and get the test session results.
         """
-        for index in range(len(self.tasks.tasks)):
-            print(self.tasks.info(index))
+        print(self.tasks.info())
 
 
 def main():

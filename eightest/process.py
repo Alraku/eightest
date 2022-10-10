@@ -17,7 +17,7 @@ class S_Process(Process):
     """
     def __init__(self,
                  test_name: str,
-                 start_time: str,
+                 session_time: str,
                  semaphore: Semaphore,
                  *args,
                  **kwargs
@@ -38,8 +38,8 @@ class S_Process(Process):
         self._duration: float = 0
         self.test_name = test_name
         self.semaphore = semaphore
-        self.start_time = start_time
-        self.status = Status.PASSED
+        self.session_time = session_time
+        self.status = Status.NOTRUN
 
     def run(self) -> None:
         """
@@ -47,7 +47,7 @@ class S_Process(Process):
         response back to parent process through Pipe.
         """
         self.semaphore.acquire()
-        log = S_Logger(self.test_name, self.start_time)
+        log = S_Logger(self.test_name, self.session_time)
         MAX_RERUNS = int(os.getenv('MAX_RERUNS'))
         NO_RUN = 0
 
@@ -57,6 +57,7 @@ class S_Process(Process):
 
             try:
                 log.start()
+                self.status = Status.RUNNING
                 Process.run(self)
 
             except Exception as e:
@@ -66,6 +67,7 @@ class S_Process(Process):
                 else:
                     self.status = Status.ERROR
             else:
+                self.status = Status.PASSED
                 break
 
             finally:
@@ -75,6 +77,10 @@ class S_Process(Process):
                                        duration,
                                        NO_RUN))
                 self.semaphore.release()
+
+    def terminate(self) -> None:
+        self.semaphore.release()
+        super().terminate()
 
     @property
     def result(self) -> None:
