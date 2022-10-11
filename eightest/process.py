@@ -2,7 +2,7 @@ import os
 import time
 
 from traceback import format_exc
-from eightest.logger import S_Logger
+from eightest.logger import eLogger
 from eightest.testcase import Status
 from multiprocess import (Semaphore,
                           Process,
@@ -47,7 +47,8 @@ class S_Process(Process):
         response back to parent process through Pipe.
         """
         self.semaphore.acquire()
-        log = S_Logger(self.test_name, self.session_time)
+        # self._child_conn.send(0)
+        log = eLogger(self.test_name, self.session_time)
         MAX_RERUNS = int(os.getenv('MAX_RERUNS'))
         NO_RUN = 0
 

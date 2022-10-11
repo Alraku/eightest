@@ -1,5 +1,7 @@
 import os
 import time
+import pprint
+import psutil
 import importlib
 
 from ast import Module
@@ -106,9 +108,13 @@ class Task(object):
             the process is to be terminated.
         """
         self.process.join(timeout)
+
+        if self.process.is_alive():
+            # log.debug('failed to join worker %s', self.process)
+            self.process.kill()
         self.set_result()
 
-    def terminate(self, timeout: int) -> None:
+    def terminate(self, timeout: int = 0) -> None:
         """
         Terminates process by force.
         """
@@ -216,28 +222,45 @@ class Runner(object):
         for task in self.tasks.all_tasks:
             task.run()
 
-        while self.tasks.all_tasks:
+        try:
+            while self.tasks.all_tasks:
 
-            for task in self.tasks.all_tasks:
-                if not task.process.is_alive():
-                    task.join()
-                    self.tasks.complete(task)
-
-                if task.result.status.name == "RUNNING":
-                    duration = time.perf_counter() - task.duration - 0.25
-
-                    if (duration > TIMEOUT):
-                        task.terminate(TIMEOUT)
+                for task in self.tasks.all_tasks:
+                    if not task.process.is_alive():
+                        task.join()
                         self.tasks.complete(task)
 
-            time.sleep(0.2)
+                    if task.result.status.name == "RUNNING":
+                        duration = time.perf_counter() - task.duration - 0.25
+
+                        if (duration > TIMEOUT):
+                            task.terminate(TIMEOUT)
+                            self.tasks.complete(task)
+
+                time.sleep(0.2)
+
+        except (KeyboardInterrupt, SystemExit):
+            # log.info('parent received ctrl-c: stop all processes')
+            for task in self.tasks.all_tasks:
+                if task.process.is_alive():
+                    task.terminate(0)
+
+    def pause_resume(self) -> None:
+        for task in self.tasks.all_tasks:
+            if task.process.is_alive():
+                proc = psutil.Process(task.process.pid)
+
+                if proc.is_running():
+                    proc.suspend()
+                else:
+                    proc.resume()
 
     def get_results(self) -> None:
         """
         Wait untill all processes are finished
         and get the test session results.
         """
-        print(self.tasks.info())
+        pprint.pprint(self.tasks.info())
 
 
 def main():
