@@ -6,7 +6,7 @@ import importlib
 
 from ast import Module
 from typing import Tuple
-from multiprocess import Semaphore
+from multiprocess import Semaphore, Pipe
 from eightest.process import S_Process
 from eightest.utilities import get_time
 from eightest.searcher import create_tree
@@ -42,7 +42,7 @@ class Tasks(object):
         self.all_tasks = list()
         self.completed = list()
 
-    def add(self, process: S_Process, instance: TestCase) -> None:
+    def add(self, process: S_Process, instance: TestCase, pipe_conn: Pipe) -> None:
         """
         Adds a process with its associated
         instance to the list, sets Result object.
@@ -51,7 +51,7 @@ class Tasks(object):
             process (S_Process): Process object.
             instance (TestCase): Test instance.
         """
-        task = Task(process, instance, Tasks.Result())
+        task = Task(process, instance, pipe_conn, Tasks.Result())
         self.all_tasks.append(task)
 
     def complete(self, task: 'Task') -> None:
@@ -61,11 +61,10 @@ class Tasks(object):
     def info(self) -> str:
         output = list()
         for task in self.completed:
-            output.append(f"<Process: {task.process}" +
-                          f" Instance: {task.instance}" + 
-                          f" Result: {task.result.status}" +
-                          f" Duration: {task.result.duration}" +
-                          f" Retries: {task.result.retries}>")
+            output.append(f"Test Name: {task.result.test_name} " +
+                          f"Result: {task.result.status} " +
+                          f"Duration: {task.result.duration} " +
+                          f"Retries: {task.result.retries}")
         return output
 
 
@@ -81,10 +80,12 @@ class Task(object):
     def __init__(self,
                  process: S_Process,
                  instance: TestCase,
+                 pipe_conn: Pipe,
                  result: Tasks
                  ) -> None:
         self.process = process
         self.instance = instance
+        self.pipe_conn = pipe_conn
         self.result = result
         self.duration = None
 
@@ -93,8 +94,10 @@ class Task(object):
         Starts process if not running.
         """
         self.process.start()
+        self.pipe_conn.recv()
         self.duration = time.perf_counter()
         self.result.status = Status.RUNNING
+        self.result.test_name = self.process.test_name
 
     def join(self, timeout: int = 0) -> None:
         """
@@ -118,9 +121,11 @@ class Task(object):
         """
         Terminates process by force.
         """
+        # TODO to mozna polaczyc jakos z test_result, niech process wysyla jednak pelna zwrotke
         self.process.terminate()
         self.result.status = Status.ERROR
         self.result.duration = f"TIMEOUT({timeout}s)"
+        self.result.retries = 'NA'
 
     def set_result(self) -> None:
         """
@@ -130,7 +135,7 @@ class Task(object):
         (self.result.test_name,
          self.result.status,
          self.result.duration,
-         self.result.retries) = self.process.result
+         self.result.retries) = self.pipe_conn.recv()
 
 
 class Runner(object):
@@ -206,38 +211,47 @@ class Runner(object):
                 # For each test in given TestSuite.
                 for test_name in test_class[next(iter(test_class.keys()))]:
                     _test_instance = _class(test_name)
+                    parent_conn, child_conn = Pipe()
 
                     process = S_Process(
                             target=getattr(_class, test_name),
                             args=(_test_instance,),
                             test_name=test_name,
                             session_time=start_time,
-                            semaphore=semaphore
+                            semaphore=semaphore,
+                            pipe_conn=child_conn
                     )
-                    self.tasks.add(process, _test_instance)
+                    self.tasks.add(process, _test_instance, parent_conn)
 
-    def run_tests(self) -> None:
-        TIMEOUT = int(os.getenv('PROCESS_TIMEOUT'))
+    def run_testPROCESS_TIMEOUT'))
 
-        for task in self.tasks.all_tasks:
-            task.run()
+        try:
+            for task in self.tasks.all_tasks:
+                task.run()
+
+        except (KeyboardInterrupt, SystemExit):
+            for task in self.tasks.all_tasks:
+                if task.process.is_alive():
+                    task.terminate(0)
 
         try:
             while self.tasks.all_tasks:
-
+                print('new iteration')
                 for task in self.tasks.all_tasks:
                     if not task.process.is_alive():
                         task.join()
                         self.tasks.complete(task)
 
+                    # print(task.result.status.name)
                     if task.result.status.name == "RUNNING":
-                        duration = time.perf_counter() - task.duration - 0.25
+                        check_time = time.perf_counter() - task.duration
+                        # print('CHEEEECK: ', check_time)
 
-                        if (duration > TIMEOUT):
+                        if (check_time > TIMEOUT):
                             task.terminate(TIMEOUT)
                             self.tasks.complete(task)
 
-                time.sleep(0.2)
+                time.sleep(0.1)
 
         except (KeyboardInterrupt, SystemExit):
             # log.info('parent received ctrl-c: stop all processes')
