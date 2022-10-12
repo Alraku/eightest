@@ -223,7 +223,8 @@ class Runner(object):
                     )
                     self.tasks.add(process, _test_instance, parent_conn)
 
-    def run_testPROCESS_TIMEOUT'))
+    def run_tests(self) -> None:
+        TIMEOUT = int(os.getenv('PROCESS_TIMEOUT'))
 
         try:
             for task in self.tasks.all_tasks:
