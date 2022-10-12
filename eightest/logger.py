@@ -81,7 +81,7 @@ class S_StreamHandler(StreamHandler):
         self.setFormatter(formatter)
 
 
-class S_Logger(Logger):
+class eLogger(Logger):
     """
     Class that overrides standard Logging library.
     """
@@ -116,13 +116,13 @@ class S_Logger(Logger):
         """
         Test start logging method.
         """
-        if self.isEnabledFor(S_Logger.INFO):
-            self._log(S_Logger.INFO,
+        if self.isEnabledFor(eLogger.INFO):
+            self._log(eLogger.INFO,
                       f'THE EXECUTION OF {self.test_name.upper()} ' +
                       'HAS STARTED.',
                       args)
 
-    def end(self, start: time.time, status: Status, *args) -> float:
+    def end(self, start: time.time, status: Status, NO_RUN, *args) -> float:
         """
         Test end logging method. Computes duration
         of test execution.
@@ -136,13 +136,14 @@ class S_Logger(Logger):
         end = time.perf_counter()
         duration = round(end-start, 2)
 
-        if self.isEnabledFor(S_Logger.INFO):
-            self._log(S_Logger.INFO,
+        if self.isEnabledFor(eLogger.INFO):
+            self._log(eLogger.INFO,
                       (f'THE EXECUTION OF {self.test_name.upper()} ' +
-                       f'HAS ENDED WITH RESULT: {status.name}'),
+                       f'HAS ENDED WITH RESULT: {status.name} ' +
+                       f'RUN NUMBER: {NO_RUN}'),
                       args)
 
-            self._log(S_Logger.INFO,
+            self._log(eLogger.INFO,
                       f'FINISHED IN {duration} SECOND(S)',
                       args)
 
@@ -155,8 +156,8 @@ class S_Logger(Logger):
         Args:
             traceback (str): Full exception traceback in string from.
         """
-        if self.isEnabledFor(S_Logger.ERROR):
-            self._log(S_Logger.ERROR,
+        if self.isEnabledFor(eLogger.ERROR):
+            self._log(eLogger.ERROR,
                       f'AN EXCEPTION OCCURRED: {traceback}',
                       args)
 
