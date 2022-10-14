@@ -2,7 +2,7 @@ import os
 import time
 
 from traceback import format_exc
-from eightest.logger import S_Logger
+from eightest.logger import eLogger
 from eightest.testcase import Status
 from multiprocess import (Semaphore,
                           Process,
@@ -19,6 +19,7 @@ class S_Process(Process):
                  test_name: str,
                  session_time: str,
                  semaphore: Semaphore,
+                 pipe_conn: Pipe,
                  *args,
                  **kwargs
                  ) -> None:
@@ -34,7 +35,8 @@ class S_Process(Process):
                                    of available processes.
         """
         Process.__init__(self, *args, **kwargs)
-        self._parent_conn, self._child_conn = Pipe()
+        # self._parent_conn, self._child_conn = Pipe()
+        self._child_conn = pipe_conn
         self._duration: float = 0
         self.test_name = test_name
         self.semaphore = semaphore
@@ -47,7 +49,8 @@ class S_Process(Process):
         response back to parent process through Pipe.
         """
         self.semaphore.acquire()
-        log = S_Logger(self.test_name, self.session_time)
+        self._child_conn.send(None)
+        log = eLogger(self.test_name, self.session_time)
         MAX_RERUNS = int(os.getenv('MAX_RERUNS'))
         NO_RUN = 0
 
@@ -71,12 +74,12 @@ class S_Process(Process):
                 break
 
             finally:
-                duration = log.end(start, self.status)
-                self._child_conn.send((self.test_name,
-                                       self.status,
-                                       duration,
-                                       NO_RUN))
-                self.semaphore.release()
+                duration = log.end(start, self.status, NO_RUN)
+        self._child_conn.send((self.test_name,
+                               self.status,
+                               duration,
+                               NO_RUN))
+        self.semaphore.release()
 
     def terminate(self) -> None:
         self.semaphore.release()
