@@ -161,6 +161,22 @@ class eLogger(Logger):
                       f'AN EXCEPTION OCCURRED: {traceback}',
                       args)
 
+    def terminate(self, timeout: int, *args) -> None:
+        """
+        Test termination logging method.
+
+        Args:
+            timeout (int): Time in secs. 
+        """
+        message = 'PROCESS TERMINATED BY EXTERNAL CAUSE.'
+        if timeout == 0:
+            message = f'PROCESS TERMINATED BY TIMEOUT: {timeout} SEC.'
+
+        if self.isEnabledFor(eLogger.ERROR):
+            self._log(eLogger.ERROR,
+                      message,
+                      args)
+
     @classmethod
     def get_logger(cls) -> logging.Logger:
         """
