@@ -46,6 +46,7 @@ class Status(Enum):
     PASSED = auto()
     FAILED = auto()
     ERROR = auto()
+    TIMEOUT = auto()
 
 
 class TestCase(metaclass=MetaTestCase):
