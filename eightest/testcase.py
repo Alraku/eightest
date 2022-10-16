@@ -124,7 +124,7 @@ class TestCase(metaclass=MetaTestCase):
 
 
 class Results(object):
-   
+
     def add(self, test: TestCase) -> None:
         """
         Add a Test to the list of tests.
