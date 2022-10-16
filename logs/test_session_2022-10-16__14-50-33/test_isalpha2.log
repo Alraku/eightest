@@ -1,0 +1,42 @@
+2022-10-16 14:50:43 INFO     line:61 of process.py      >> THE EXECUTION OF TEST_ISALPHA2 HAS STARTED.
+2022-10-16 14:50:43 DEBUG    line:10 of test_strings.py >> Before Test
+2022-10-16 14:50:44 ERROR    line:66 of process.py      >> AN EXCEPTION OCCURRED: Traceback (most recent call last):
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\eightest\process.py", line 63, in run
+    Process.run(self)
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\.venv\lib\site-packages\multiprocess\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\eightest\testcase.py", line 27, in new_test
+    args[0].after()
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\tests\test_strings.py", line -1, in test_isalpha2
+AssertionError
+
+2022-10-16 14:50:44 INFO     line:76 of process.py      >> THE EXECUTION OF TEST_ISALPHA2 HAS ENDED WITH RESULT: FAILED RUN NUMBER: 1
+2022-10-16 14:50:44 INFO     line:76 of process.py      >> FINISHED IN 1.01 SECOND(S)
+2022-10-16 14:50:44 INFO     line:61 of process.py      >> THE EXECUTION OF TEST_ISALPHA2 HAS STARTED.
+2022-10-16 14:50:44 DEBUG    line:10 of test_strings.py >> Before Test
+2022-10-16 14:50:45 ERROR    line:66 of process.py      >> AN EXCEPTION OCCURRED: Traceback (most recent call last):
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\eightest\process.py", line 63, in run
+    Process.run(self)
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\.venv\lib\site-packages\multiprocess\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\eightest\testcase.py", line 27, in new_test
+    args[0].after()
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\tests\test_strings.py", line -1, in test_isalpha2
+AssertionError
+
+2022-10-16 14:50:45 INFO     line:76 of process.py      >> THE EXECUTION OF TEST_ISALPHA2 HAS ENDED WITH RESULT: FAILED RUN NUMBER: 2
+2022-10-16 14:50:45 INFO     line:76 of process.py      >> FINISHED IN 1.01 SECOND(S)
+2022-10-16 14:50:45 INFO     line:61 of process.py      >> THE EXECUTION OF TEST_ISALPHA2 HAS STARTED.
+2022-10-16 14:50:45 DEBUG    line:10 of test_strings.py >> Before Test
+2022-10-16 14:50:46 ERROR    line:66 of process.py      >> AN EXCEPTION OCCURRED: Traceback (most recent call last):
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\eightest\process.py", line 63, in run
+    Process.run(self)
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\.venv\lib\site-packages\multiprocess\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\eightest\testcase.py", line 27, in new_test
+    args[0].after()
+  File "C:\Users\Krzysztof_Rakowski\Documents\Projects\eightest\tests\test_strings.py", line -1, in test_isalpha2
+AssertionError
+
+2022-10-16 14:50:46 INFO     line:76 of process.py      >> THE EXECUTION OF TEST_ISALPHA2 HAS ENDED WITH RESULT: FAILED RUN NUMBER: 3
+2022-10-16 14:50:46 INFO     line:76 of process.py      >> FINISHED IN 1.01 SECOND(S)

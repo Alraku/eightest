@@ -1,0 +1,4 @@
+2022-10-16 14:47:33 INFO     line:61 of process.py      >> THE EXECUTION OF TEST_ISALPHA HAS STARTED.
+2022-10-16 14:47:33 DEBUG    line:10 of test_strings.py >> Before Test
+2022-10-16 14:47:34 INFO     line:76 of process.py      >> THE EXECUTION OF TEST_ISALPHA HAS ENDED WITH RESULT: PASSED RUN NUMBER: 1
+2022-10-16 14:47:34 INFO     line:76 of process.py      >> FINISHED IN 1.01 SECOND(S)

@@ -46,6 +46,7 @@ class Status(Enum):
     PASSED = auto()
     FAILED = auto()
     ERROR = auto()
+    TIMEOUT = auto()
 
 
 class TestCase(metaclass=MetaTestCase):
@@ -123,7 +124,7 @@ class TestCase(metaclass=MetaTestCase):
 
 
 class Results(object):
-   
+
     def add(self, test: TestCase) -> None:
         """
         Add a Test to the list of tests.
