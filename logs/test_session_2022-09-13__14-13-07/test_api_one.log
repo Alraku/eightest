@@ -1,6 +1,0 @@
-2022-09-13 14:13:07 [INFO ] line:49 of process.py      >> EXECUTION OF test_api_one HAS STARTED.
-2022-09-13 14:13:07 [DEBUG] line:12 of test_login.py   >> BEFORE LOG
-2022-09-13 14:13:07 [DEBUG] line:19 of test_login.py   >> TEST_ONE LOG
-2022-09-13 14:13:08 [DEBUG] line:15 of test_login.py   >> AFTER LOG
-2022-09-13 14:13:08 [INFO ] line:59 of process.py      >> EXECUTION OF test_api_one HAS ENDED.
-2022-09-13 14:13:08 [INFO ] line:61 of process.py      >> FINISHED in 1.02 second(s)

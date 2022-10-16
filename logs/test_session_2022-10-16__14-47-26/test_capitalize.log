@@ -1,0 +1,4 @@
+2022-10-16 14:47:27 INFO     line:61 of process.py      >> THE EXECUTION OF TEST_CAPITALIZE HAS STARTED.
+2022-10-16 14:47:27 DEBUG    line:10 of test_strings.py >> Before Test
+2022-10-16 14:47:29 INFO     line:76 of process.py      >> THE EXECUTION OF TEST_CAPITALIZE HAS ENDED WITH RESULT: PASSED RUN NUMBER: 1
+2022-10-16 14:47:29 INFO     line:76 of process.py      >> FINISHED IN 2.01 SECOND(S)
