@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+# v0.4.0 - (2022-10-01)
+
+This release brings first version of GUI written in Django 4.1 and big changes in how main runner class works.
+
+## Major Improvements:
+* Added functionality of config file with env variables in https://github.com/Alraku/eightest/pull/9
+* Initialization of Django Web Server, added configuration file in https://github.com/Alraku/eightest/pull/10 https://github.com/Alraku/eightest/pull/11
+* Redesigned navbar, refactored runner module in order to add TaskList abstraction. in https://github.com/Alraku/eightest/pull/12
+* Main runner class refactor in https://github.com/Alraku/eightest/pull/13
+
+**Full Changelog**: https://github.com/Alraku/eightest/compare/v0.3.0...v0.4.0
+
 # v0.3.0 - (2022-10-01)
 
 This version brings improvements in test running and small fixes.
