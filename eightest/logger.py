@@ -20,7 +20,6 @@ class S_FileHandler(FileHandler):
     """
     Class that overrides standard Logging FileHanlder.
     """
-
     def __init__(self,
                  test_name: str,
                  session_date: str,
@@ -38,7 +37,6 @@ class S_FileHandler(FileHandler):
             encoding (str | None, optional): Type of file encoding.
             delay (int, optional): If true, file deferred until first call.
         """
-
         filename = self.create_path(session_date, test_name)
         super(S_FileHandler, self).__init__(filename, mode, encoding, delay)
         self.setFormatter(Formatter(text_format, date_format))
@@ -102,12 +100,12 @@ class eLogger(Logger):
             log_name (str, optional): Logger name. Defaults to 'main'.
         """
         Logger.__init__(self, log_name, *args, **kwargs)
-        self.logger = logging.getLogger(log_name)
-        self.logger.setLevel(logging.DEBUG)
-        self.logger.addHandler(S_StreamHandler())
-        self.logger.addHandler(S_FileHandler(test_name, start_time))
+        self.__logger = logging.getLogger(log_name)
+        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.addHandler(S_StreamHandler())
+        self.__logger.addHandler(S_FileHandler(test_name, start_time))
 
-        self.test_name = test_name
+        self.__test_name = test_name
         self.setLevel(logging.DEBUG)
         self.addHandler(S_StreamHandler())
         self.addHandler(S_FileHandler(test_name, start_time))
@@ -118,7 +116,7 @@ class eLogger(Logger):
         """
         if self.isEnabledFor(eLogger.INFO):
             self._log(eLogger.INFO,
-                      f'THE EXECUTION OF {self.test_name.upper()} ' +
+                      f'THE EXECUTION OF {self.__test_name.upper()} ' +
                       'HAS STARTED.',
                       args)
 
@@ -138,7 +136,7 @@ class eLogger(Logger):
 
         if self.isEnabledFor(eLogger.INFO):
             self._log(eLogger.INFO,
-                      (f'THE EXECUTION OF {self.test_name.upper()} ' +
+                      (f'THE EXECUTION OF {self.__test_name.upper()} ' +
                        f'HAS ENDED WITH RESULT: {status.name} ' +
                        f'RUN NUMBER: {NO_RUN}'),
                       args)

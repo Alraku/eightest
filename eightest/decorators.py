@@ -10,7 +10,7 @@ class Template(object):
     """
     def __init__(self, object) -> None:
 
-        self.object = object
+        self.__object = object
         functools.update_wrapper(self, object)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Callable:
@@ -22,8 +22,8 @@ class Template(object):
         Returns:
             Callable: Decorated function or method.
         """
-        if inspect.isclass(self.object):
-            for name, method in inspect.getmembers(self.object):
+        if inspect.isclass(self.__object):
+            for name, method in inspect.getmembers(self.__object):
                 if not inspect.isfunction(method) \
                    or inspect.isbuiltin(method):
                     continue
@@ -32,11 +32,11 @@ class Template(object):
                    not name.startswith('test_'):
                     continue
 
-                setattr(self.object, name, self.decorate_method(method))
-            return self.object(*args, **kwargs)
+                setattr(self.__object, name, self.decorate_method(method))
+            return self.__object(*args, **kwargs)
 
         else:
-            self.object(*args, **kwargs)
+            self.__object(*args, **kwargs)
 
     def decorate_method(self, original_func: Callable) -> Callable:
         """

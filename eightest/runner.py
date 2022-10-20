@@ -59,9 +59,9 @@ class Task(object):
         """
         self.process = process
         self.instance = instance
-        self.pipe_conn = pipe_conn
         self.result = result
         self.duration = None
+        self._pipe_conn = pipe_conn
 
     def run(self) -> None:
         """
@@ -79,7 +79,7 @@ class Task(object):
 
         try:
             self.process.start()
-            if (resp := self.pipe_conn.recv()) != 0:
+            if (resp := self._pipe_conn.recv()) != 0:
                 raise ValueError(f'Wrong return value from process: {resp}')
 
             self.duration = time.perf_counter()
@@ -101,7 +101,7 @@ class Task(object):
             the process is to be joined.
         """
         self.process.join(timeout)
-        self.set_result()
+        self._set_result()
 
     def terminate(self, timeout: int) -> None:
         """
@@ -112,7 +112,7 @@ class Task(object):
         self.result.duration = timeout
         self.result.retries = 1
 
-    def set_result(self) -> None:
+    def _set_result(self) -> None:
         """
         Gets result from process object of finished test
         and sets to internal results object.
@@ -120,7 +120,7 @@ class Task(object):
         Raises:
             ChildProcessError: When no response is available from process.
         """
-        if not self.pipe_conn.poll():
+        if not self._pipe_conn.poll():
             message = f'Could not get response from process: {self.process}.'
             # log.error(message)
             raise ChildProcessError(message)
@@ -128,7 +128,7 @@ class Task(object):
         (self.result.test_name,
          self.result.status,
          self.result.duration,
-         self.result.retries) = self.pipe_conn.recv()
+         self.result.retries) = self._pipe_conn.recv()
 
 
 class Tasks(object):
