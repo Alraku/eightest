@@ -22,7 +22,7 @@
     </div>
 
     <div class="right">    
-        <a class="button">
+        <a class="button" href="{% url 'function' %}">
             <button>
                 <i class="fas fa-cog"></i>
                 Settings
@@ -30,17 +30,47 @@
         </a>
     </div>
 </nav>
-<!-- 
-<a class="play-pause-button" href="{% url 'function' %}">
-    <button>
-        <i class="fas fa-play"></i>
-    </button>
-</a>
+<div class="testexecution-container">
+    <div class="center">
+        <div class="test-execution-label">
+            TEST EXECUTION
+        </div>
+        <div class="progress-bar-container">
+            
 
-<div class="progress-bar">
-    <progress value="67" max="100"></progress>  
+
+
+
+            <div class="container">
+
+            <div class="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" style="width:60%">
+                Free Space
+                </div>
+                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:10%">
+                Warning
+                </div>
+                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:20%">
+                Danger
+                </div>
+            </div>
+            </div>
+
+            <!-- <a class="play-pause-button" href="{% url 'function' %}">
+                <button>
+                    <i class="fas fa-play"></i>
+                </button>
+            </a>
+            <div class="progress-bar">
+                <progress value="55" max="100"></progress>  
+            </div>
+            <a class="tests-text">
+                45/63
+            </a> -->
+        </div>
+        <div class="labels-container">
+            Passed Error Failed
+        </div>
+    </div>
 </div>
 
-<a class="tests-text">
-    45/63
-</a> -->

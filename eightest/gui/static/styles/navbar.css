@@ -5,7 +5,7 @@
     margin: 0;
     padding: 0;
     font-family: 'Asap', sans-serif;
-    font-size: 16px;
+    font-size: px;
 }
 
 .navbar {
@@ -18,15 +18,18 @@
 }
 
 .navbar .logo {
-    align-items: center;
     cursor: pointer;
-    text-align: center;
-    vertical-align: middle;
 }
 
-.navbar .logo img{
+.navbar .logo a {
+    display: block;
+    text-align: center;
+}
+
+.navbar .logo img {
     height: 40px;
     width: auto;
+    vertical-align: middle; 
 }
 
 .navbar .nav-links li {
@@ -35,7 +38,7 @@
     color: #d4e5ed;
     cursor: pointer;
     letter-spacing: 1px;
-    font-size: 12px;
+    font-size: 18px;
     margin: 0 15px;
     border-bottom: 1px solid transparent;    
     transition: all .5s ease-in;
@@ -49,7 +52,7 @@
     color: #1b3039;
     border: none;
     cursor: pointer;
-    padding: 4px 15px 4px 15px;
+    padding: 6px 15px 6px 15px;
     background: #70909D;
     transition: all 0.3s ease 0s;
     font-weight: 500;
@@ -59,8 +62,9 @@
 }
 
 .fa-cog {
-    font-size: 18px;
+    margin: auto;
     padding-right: 5px;
+
 }
 
 .navbar .button button:hover{
@@ -72,6 +76,38 @@
     display: flex;
     align-items: center;
 }
+
+.testexecution-container {
+    height: 180px;
+    border: 1px solid gray;
+}
+
+.testexecution-container .center {
+    display: block;
+    height: 180px;
+    margin: auto;
+    text-align: center;
+    color: black;
+    width: 50%;
+    border: 1px solid blue
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70px;
+}
+
+.test-execution-label {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1B3039;
+    letter-spacing: 2px;
+    font-size: 18px;
+    margin: 40px 0 20px 0;
+}
+
 
 .center .play-pause-button button {
     color: #1b3039;
@@ -94,19 +130,20 @@
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
-    width: 500px;  
+    width: 700px;  
     height: 35px;
     padding: 0 15px 0 15px
 }  
 
 .progress-bar progress::-webkit-progress-bar {
-    background-color: rgb(24, 23, 23);
+    background-color: #467A97;
     border-radius: 50px;
     color: aqua;
+    height: 50px;
 }
 
 progress::-webkit-progress-value {
-    background-color: rgb(35, 175, 56);
+    background-color: #469767;
     border-radius: 50px;
 }
 
@@ -120,3 +157,18 @@ progress::-webkit-progress-value {
     font-size: medium;
 }
 
+.progress-bar-success {
+    border-radius: 50px !important;
+}
+
+.progress-bar-warning {
+    border-radius: 50px !important;
+}
+
+.progress-bar-danger {
+    border-radius: 50px !important;
+}
+
+.progress {
+    border-radius: 50px !important;
+}
