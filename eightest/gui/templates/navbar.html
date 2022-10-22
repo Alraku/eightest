@@ -30,46 +30,55 @@
         </a>
     </div>
 </nav>
-<div class="testexecution-container">
+<div class="progressbar-container">
     <div class="center">
-        <div class="test-execution-label">
+        <div class="label">
             TEST EXECUTION
         </div>
-        <div class="progress-bar-container">
+        <div class="progress-bar-inner">
             
 
-
-
-
-            <div class="container">
-
-            <div class="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" style="width:60%">
-                Free Space
-                </div>
-                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:10%">
-                Warning
-                </div>
-                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:20%">
-                Danger
-                </div>
-            </div>
-            </div>
-
-            <!-- <a class="play-pause-button" href="{% url 'function' %}">
+            <a class="action-button" href="{% url 'function' %}">
                 <button>
                     <i class="fas fa-play"></i>
                 </button>
             </a>
-            <div class="progress-bar">
+            <!-- <div class="progress-bar">
                 <progress value="55" max="100"></progress>  
+            </div> -->
+            <div class="progress-bar">
+                <div class="progress success" role="progress-bar">
+                </div>
+                <div class="progress error" role="progress-bar">
+                </div>
+                <div class="progress failed" role="progress-bar">
+                </div>
+                <div class="progress overall" role="progress-bar">
+                </div>
             </div>
             <a class="tests-text">
-                45/63
-            </a> -->
+                59/68
+            </a>
         </div>
         <div class="labels-container">
-            Passed Error Failed
+            <ul class="labels">
+                <li>
+                    <a class="label passed">PASSED:</a>
+                    <a>53</a>
+                </li>
+                <li>
+                    <a class="label error">ERROR:</a>
+                    <a>4</a>
+                </li>
+                <li>
+                    <a class="label failed">FAILED:</a>
+                    <a>2</a>
+                </li>
+                <li>
+                    <a class="label notrun">NOT RUN:</a>
+                    <a>9</a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
