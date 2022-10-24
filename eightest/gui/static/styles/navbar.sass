@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Asap:wght@300;400;500;600;700&display=swap')
+
+$eightest-main: #1b3039
+$sucess-value: 450px
+$error-value: $sucess-value + 50px
+$failed-value: $error-value + 20px
+$overall-width: 600px
+
+*   
+    margin: 0
+    padding: 0
+    box-sizing: border-box
+    font-family: 'Asap', sans-serif
+
+.navbar
+    height: 60px
+    display: flex
+    padding: 5px 20px
+    align-items: center
+    justify-content: space-between
+    background-color: $eightest-main
+
+    .logo
+        cursor: pointer
+
+        a
+            display: block
+            text-align: center
+
+        img
+            height: 40px
+            vertical-align: middle
+
+    .nav-links
+
+        li
+            margin: 0 15px
+            font-size: 18px
+            cursor: pointer
+            font-weight: 300
+            color: #d4e5ed
+            letter-spacing: 1px
+            display: inline-block
+            transition: all .5s ease-in
+            border-bottom: 1px solid transparent
+
+        li:hover
+            border-bottom: 1px solid #919ca1
+
+    .button
+
+        button
+            color: $eightest-main
+            border: none
+            cursor: pointer
+            font-size: 16px
+            font-weight: 500
+            border-radius: 50px
+            letter-spacing: 1px
+            background: #70909D
+            padding: 6px 15px 6px 15px
+            transition: all 0.3s ease 0s
+
+        button:hover
+            transform: scale(1.05)
+            background-color: #e2f1f8
+
+    .fa-cog
+        margin: auto
+        padding-right: 5px
+
+    .center
+        display: flex
+        align-items: center
+
+// Test Execution Progress Bar
+
+.progressbar-container
+    height: 130px
+    //border: 1px solid gray
+
+    .center
+        width: 50%
+        margin: auto
+        color: black
+        height: 130px
+        display: block
+        text-align: center
+        //border: 1px solid blue
+        border-bottom: 2px solid #eaeaea
+
+        .label
+            font-size: 18px
+            font-weight: 600
+            color: #1B3039
+            letter-spacing: 2px
+            margin: 40px 0 10px 0
+
+        .progress-bar-inner
+            width: 100%
+            display: flex
+            align-items: center
+            justify-content: center
+
+        .progress-bar
+            height: 45px
+            width: $overall-width
+            align-items: center
+            margin: 0 10px
+            justify-content: center
+
+            .progress
+                height: 45px
+                float: left
+                position: absolute
+                border-radius: 50px
+
+            .success
+                z-index: 4
+                width: $sucess-value     
+                background: #469767
+
+            .error
+                z-index: 3
+                width: $error-value
+                background: #E7B400 
+
+            .failed
+                z-index: 2
+                width: $failed-value
+                background: #AF0000
+
+            .overall
+                z-index: 1
+                width: $overall-width
+                background: #467A97
+  
+        .action-button 
+            
+            button
+                color: white
+                border: none
+                cursor: pointer
+                font-size: 18px
+                border-radius: 30px
+                background: $eightest-main
+                padding: 12px 13px 12px 15px
+                transition: all 0.3s ease 0s
+
+            button:hover
+                transform: scale(1.1)
+                background-color: #255264
+
+        .tests-text
+            color: $eightest-main
+            border: none
+            font-weight: 700
+            font-size: medium
+            padding: 3px 10px
+            border-radius: 50px
+            background: #eceff1
+
+        .labels-container
+            height: 40px
+            margin: 10px 0
+
+            .label
+                font-size: 16px
+
+            .passed
+                color: #469767
+
+            .error
+                color: #e8bc21 
+
+            .failed
+                color: #e11b1b
+
+            .notrun
+                color: #467A97
+
+            li
+                margin: 0 10px
+                font-size: 16px
+                font-weight: 700
+                color: $eightest-main
+                letter-spacing: 1px
+                display: inline-block
+
+
+

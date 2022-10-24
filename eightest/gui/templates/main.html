@@ -6,9 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Eightest Test Runner</title>
         {% load static %}
-        <link rel="stylesheet" type="text/css" href="{% static 'styles/navbar.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'styles/home.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'styles/footer.css' %}">
+        {% load sass_tags %}
+        <link rel="stylesheet" type="text/css" href="{% sass_src 'styles/navbar.sass' %}">
+        <link rel="stylesheet" type="text/css" href="{% sass_src 'styles/home.sass' %}">
+        <link rel="stylesheet" type="text/css" href="{% sass_src 'styles/footer.sass' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/all.min.css' %}" />
     </head>
     <body>

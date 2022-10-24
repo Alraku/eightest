@@ -8,6 +8,7 @@ class Template(object):
     """
     Template for specific decorator creation.
     """
+
     def __init__(self, object) -> None:
 
         self.__object = object
@@ -24,12 +25,12 @@ class Template(object):
         """
         if inspect.isclass(self.__object):
             for name, method in inspect.getmembers(self.__object):
-                if not inspect.isfunction(method) \
-                   or inspect.isbuiltin(method):
+                if not inspect.isfunction(method) or inspect.isbuiltin(method):
                     continue
 
-                if not inspect.ismethod(method) and \
-                   not name.startswith('test_'):
+                if not inspect.ismethod(method) and not name.startswith(
+                    "test_"
+                ):
                     continue
 
                 setattr(self.__object, name, self.decorate_method(method))
@@ -48,9 +49,11 @@ class Template(object):
         Returns:
             Callable: Decorated method.
         """
+
         @functools.wraps(original_func)
         def decorator(*args, **kwargs):
             return original_func(self, *args, **kwargs)
+
         return decorator
 
 
