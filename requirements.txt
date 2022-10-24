@@ -5,3 +5,12 @@ django-static-fontawesome==5.15.4.0
 multiprocess==0.70.13
 sqlparse==0.4.3
 psutil==5.9.2
+django-sass==1.1.0
+libsass==0.21.0
+six==1.16.0
+django-appconf==1.0.5 
+django-compressor==4.1 
+django-sass-processor==1.2.1 
+rcssmin==1.1.0 
+rjsmin==1.2.0 
+six==1.16.0
