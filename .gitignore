@@ -135,5 +135,5 @@ dmypy.json
 # Other Stuff
 tests
 example.py
-
+staticfiles
 
