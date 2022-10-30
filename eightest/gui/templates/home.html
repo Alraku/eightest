@@ -3,7 +3,15 @@
 {% block content %}
 
 <div class="home">
-    Home HTML {{ tasks|length }}
+    <form method="POST" action ="{% url 'checkboxes' %}">{% csrf_token %}
+        {% for test in tests %}
+            <li>
+                <input type="checkbox" name="checks[]" value="{{test}}">
+                {{test.test_name}}
+            </li>
+        {% endfor %}
+        <button type="submit">check this</button>
+    </form>
 </div>
 
 {% endblock content %}
