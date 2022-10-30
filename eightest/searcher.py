@@ -7,6 +7,21 @@ from eightest.exceptions import (NoTestsFoundError,
                                  TestOutOfClassError)
 
 
+class TestMethod(object):
+
+    def __init__(self,
+                 module_path: str,
+                 test_class: str,
+                 test_name: str,
+                 decorator: str = None
+                 ) -> None:
+        self.module_path = module_path
+        self.test_class = test_class
+        self.test_name = test_name
+        self.decorator = decorator
+        self.selected = None
+
+
 def find_folder_path() -> str:
     """
     Searches for main test folder path.
@@ -112,18 +127,15 @@ def create_tree() -> list[dict]:
 
         # Search for tests in test classes.
         for class_ in classes:
-            dict[module].append({class_.name: []})
             methods = [n for n in class_.body if isinstance(n, ast.FunctionDef)]
-            # TODO Create way of adding info about decorator to the dict.
-
-            # Add methods to nested dictionary.
             for method in methods:
-                if method.name.startswith('test_'):
-                    if method.decorator_list:
-                        pass
-                        # print(method.decorator_list[0].id)
-                    dict[module][-1][class_.name].append(method.name)
+                if not method.name.startswith('test_'):
+                    continue
 
-        test_tree.append(dict)
+                if method.decorator_list:
+                    pass
+                    # print(method.decorator_list[0].id)
+                test_method = TestMethod(module, class_.name, method.name)
+                test_tree.append(test_method)
 
     return test_tree

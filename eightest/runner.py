@@ -12,7 +12,7 @@ from typing import List, Tuple
 from multiprocess import Semaphore, Pipe
 from eightest.process import S_Process
 from eightest.utilities import get_time
-from eightest.searcher import create_tree
+from eightest.searcher import TestMethod, create_tree
 from eightest.testcase import Status, TestCase
 
 from eightest.utilities import (load_env_file,
@@ -186,6 +186,28 @@ class Tasks(object):
     def __iter__(self) -> list[Task]:
         return itertools.cycle(self.remaining)
 
+    def get_progress(self) -> None:
+        passed = error = failed = notrun = 0
+
+        for task in self.completed:
+            if task.result.status.name == 'PASSED':
+                passed += 1
+            if task.result.status.name == 'FAILED':
+                failed += 1
+            if task.result.status.name == 'ERROR':
+                error += 1
+            if task.result.status.name == 'TIMEOUT':
+                error += 1
+
+        notrun = len(self.remaining)
+        progress = {
+            "passed": passed,
+            "error": error,
+            "failed": failed,
+            "notrun": notrun
+        }
+        return progress
+
 
 class Runner(object):
     """
@@ -200,15 +222,16 @@ class Runner(object):
         set_cpu_count()
         load_env_file()
         self.tasks = Tasks()
-        self.test_tree: List[dict] = create_tree()
+        self.test_tree: List[TestMethod] = create_tree()
+        self.selected: List[TestMethod] = []
 
-    def collect_tests(self) -> None:
+    def collect_tests(self, list) -> None:
         """
         Method for future test selection.
         """
-        pass
+        self.selected = list
 
-    def importer(self, module: dict) -> Tuple[Module, str, str]:
+    def importer(self, module_path: str) -> Module:
         """
         Imports given module name.
 
@@ -223,15 +246,14 @@ class Runner(object):
             Tuple[Module, str, str]: Imported module,
             its name and members.
         """
-        mod_name = next(iter(module.keys()))
-        mod_members = next(iter(module.values()))
-
+        # mod_name = next(iter(module.keys()))
+        # mod_members = next(iter(module.values()))
         try:
-            mod = importlib.import_module(mod_name)
+            module = importlib.import_module(module_path)
         except ModuleNotFoundError as Error:
             raise Error
 
-        return mod, mod_name, mod_members
+        return module
 
     def dispatch_tasks(self) -> None:
         """
@@ -248,28 +270,23 @@ class Runner(object):
                 raise ValueError('Not enough cores to parallelise.')
 
         semaphore = Semaphore(concurrency)
-        # For each module in test hierarchy.
-        for module in self.test_tree:
-            module, mod_name, mod_members = self.importer(module)
 
-            # For each TestSuite in module.
-            for test_class in mod_members:
-                _class = getattr(module, next(iter(test_class.keys())))
+        for test_method in self.selected:
+            module = self.importer(test_method.module_path)
 
-                # For each test in given TestSuite.
-                for test_name in test_class[next(iter(test_class.keys()))]:
-                    _test_instance = _class(test_name)
-                    parent_conn, child_conn = Pipe()
+            _class = getattr(module, test_method.test_class)
+            _test_instance = _class(test_method.test_name)
+            parent_conn, child_conn = Pipe()
 
-                    process = S_Process(
-                            target=getattr(_class, test_name),
-                            args=(_test_instance,),
-                            test_name=test_name,
-                            session_time=start_time,
-                            semaphore=semaphore,
-                            pipe_conn=child_conn
-                    )
-                    self.tasks.add(process, _test_instance, parent_conn)
+            process = S_Process(
+                target=getattr(_class, test_method.test_name),
+                args=(_test_instance,),
+                test_name=test_method.test_name,
+                session_time=start_time,
+                semaphore=semaphore,
+                pipe_conn=child_conn
+            )
+            self.tasks.add(process, _test_instance, parent_conn)
 
     def run_tests(self) -> None:
         """
