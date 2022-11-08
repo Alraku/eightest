@@ -17,7 +17,6 @@ def home(request):
 
 def checkboxes(request):
     lista = request.POST.getlist('checks[]')
-    print(lista[0].test_name)
     request.session['my_data'] = lista
     # return render(request, 'home.html')
     return function(request, {"xd": lista})

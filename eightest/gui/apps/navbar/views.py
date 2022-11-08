@@ -14,13 +14,15 @@ os.chdir(ROOT_DIR)
 runner = Runner()
 
 
-def function(request):
+def function(request, context):
     global variable
     variable = True
 
     # data = request.session.get('my_data')
     # for dat in data:
     #     print(type(dat))
+    data = context["xd"]
+
     runner.collect_tests(data)
     runner.dispatch_tasks()
 

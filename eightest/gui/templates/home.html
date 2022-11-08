@@ -4,13 +4,21 @@
 
 <div class="home">
     <form method="POST" action ="{% url 'checkboxes' %}">{% csrf_token %}
+        <ul class="unordlist">
         {% for test in tests %}
-            <li>
-                <input type="checkbox" name="checks[]" value="{{test}}">
-                {{test.test_name}}
+            <li class="list-elem">
+                
+                <label class="elemencik">
+                    <input class="myinput" type="checkbox" name="checks[]" value="{{test.value}}">
+                    {{test.test_name}}
+                    
+                </label>
+                {{test.test_class}}
             </li>
+        
         {% endfor %}
-        <button type="submit">test button</button>
+        </ul>
+        <div class="centerowanie"><button class="buttonik" type="submit">Start Test Execution</button></div>
     </form>
 </div>
 
