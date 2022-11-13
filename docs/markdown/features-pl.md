@@ -21,4 +21,5 @@
 	- Uruchamianie testów z poziomu interfejsu linii poleceń.
 	- Automatyczne powiadomienia dot. niepowodzenia sesji na e-mail.
 	- Scheduler umożliwiający określenie w czasie kiedy automatycznie ma nastąpić egzekucja
-	- Pauzuowanie sesji egzekucji testów i powtórne wznawianieHO
+	- Pauzuowanie sesji egzekucji testów i powtórne wznawianie
+    - Dodanie opcji porównania metryk między sobą (między egzekucjami)
