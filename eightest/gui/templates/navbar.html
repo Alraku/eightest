@@ -1,6 +1,6 @@
 {% load static %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 <nav class="navbar">
-
+    
     <div class="logo">
         <a href="{% url 'home' %}">
             <img src="{% static 'images/eightest-logo.png' %}" alt="logo">
@@ -21,8 +21,33 @@
         </ul>
     </div>
 
-    <div class="right">    
-        <a class="button" href="{% url 'function' %}">
+    <script>
+        $(document).ready(function() {
+            updateState()
+            
+            function updateState() {
+            $.ajax({
+                url: "{% url 'get_response' %}", // if you have dynamic url
+                type: 'GET'
+            })
+            .done(response => {
+                const data = response
+
+                $('a[id="value-passed"]').contents().last()[0].textContent=response["name"]["passed"];
+                $('a[id="value-error"]').contents().last()[0].textContent=response["name"]["error"];
+                $('a[id="value-failed"]').contents().last()[0].textContent=response["name"]["failed"];
+                $('a[id="value-notrun"]').contents().last()[0].textContent=response["name"]["notrun"];
+                
+
+                setTimeout(function() {
+                updateState()
+                }, 1000)
+            })}
+        })
+    </script>
+
+    <div class="right">
+        <a class="button">
             <button>
                 <i class="fas fa-cog"></i>
                 Settings
@@ -30,6 +55,7 @@
         </a>
     </div>
 </nav>
+
 <div class="progressbar-container">
     <div class="center">
         <div class="label">
@@ -43,9 +69,7 @@
                     <i class="fas fa-play"></i>
                 </button>
             </a>
-            <!-- <div class="progress-bar">
-                <progress value="55" max="100"></progress>  
-            </div> -->
+
             <div class="progress-bar">
                 <div class="progress success" role="progress-bar">
                 </div>
@@ -56,27 +80,29 @@
                 <div class="progress overall" role="progress-bar">
                 </div>
             </div>
+
             <a class="tests-text">
-                59/68
+                0/0
             </a>
+
         </div>
         <div class="labels-container">
             <ul class="labels">
                 <li>
                     <a class="label passed">PASSED:</a>
-                    <a>53</a>
+                    <a id="value-passed">0</a>
                 </li>
                 <li>
                     <a class="label error">ERROR:</a>
-                    <a>4</a>
+                    <a id="value-error">0</a>
                 </li>
                 <li>
                     <a class="label failed">FAILED:</a>
-                    <a>2</a>
+                    <a id="value-failed">0</a>
                 </li>
                 <li>
                     <a class="label notrun">NOT RUN:</a>
-                    <a>9</a>
+                    <a id="value-notrun">0</a>
                 </li>
             </ul>
         </div>

@@ -49,7 +49,7 @@ Please make sure to update tests as appropriate.
 # Technologies:
 
 - Python 3.10.6
-- Django 4.0
+- Django 4.1.1
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
