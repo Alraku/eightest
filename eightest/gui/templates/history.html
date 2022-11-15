@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div class="history">
+    <div class="list-container">
+        <ul class="unordlist-history"></ul>
+        {% for log in logs %}
+        <li class="list-elem-history">
+            {% for key, value in log.items %}
+            <label class="elemencik-history">
+                {{key}}
+            </label>
+            {% for x in value %}
+                <li>
+                    {{x}}
+                </li>
+            {% endfor %}
+            {% endfor %}
+        </li>
+        
+    {% endfor %}
+    </div>
+    
+    <div class="log-viewer">
+        <ul>
+        {% for line in loglines %}
+        <li class="log-line">
+            {{ line }}
+        </li> 
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+{% endblock content %}
