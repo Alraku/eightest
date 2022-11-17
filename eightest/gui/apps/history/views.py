@@ -1,9 +1,9 @@
-from mailbox import linesep
 from typing import Any, Dict
 from django.shortcuts import render
 from utilities import ROOT_DIR
 import os
 from django.views.generic import TemplateView
+from django.http.response import JsonResponse
 
 
 class HistoryView(TemplateView):
@@ -28,3 +28,14 @@ class HistoryView(TemplateView):
 
     def history(self, request):
         return render(request, 'history.html', self.get_context_data())
+
+    def answer_me_hist(request):
+        if request.method == 'GET':
+            log_folder = request.GET.get('log_folder')
+            log_file = request.GET.get('log_file')
+            log_path = os.path.join(HistoryView.logs_path, log_folder, log_file)
+            file = open(log_path, 'r')
+            lines = file.readlines()
+            return JsonResponse({"loglines": lines})
+        else:
+            return JsonResponse({"name": 'xd5'})
