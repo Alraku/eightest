@@ -2,6 +2,29 @@
 
 {% block content %}
 
+<script>
+    function refresh_log(log_file, log_folder) {
+        var a = "{{x}}"
+
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'get_response_hist' %}",
+            data: {"log_folder": log_folder, "log_file": log_file}
+        })
+        .done(response => {
+            const data = response
+            console.log(response)
+            document.getElementsByClassName("theList")[0].innerHTML = "";
+            var dlugosc = response['loglines'].length
+            
+            for (let i = 0; i < dlugosc; i++) { 
+                document.getElementById('theList').innerHTML += ('<li>'+response['loglines'][i]+'</li>'); 
+            }
+        })
+    }
+</script>
+
+
 <div class="history">
     <div class="list-container">
         <ul class="unordlist-history"></ul>
@@ -11,11 +34,13 @@
             <label class="elemencik-history">
                 {{key}}
             </label>
+            <ul class="lista-pliczkow">
             {% for x in value %}
-                <li>
-                    {{x}}
+                <li class="dany-pliczek">
+                    <a href="javascript:refresh_log('{{x}}', '{{key}}')">{{x}}</a>
                 </li>
             {% endfor %}
+            </ul>
             {% endfor %}
         </li>
         
@@ -23,7 +48,7 @@
     </div>
     
     <div class="log-viewer">
-        <ul>
+        <ul id="theList" class="theList">
         {% for line in loglines %}
         <li class="log-line">
             {{ line }}
