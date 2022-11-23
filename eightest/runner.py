@@ -229,7 +229,10 @@ class Runner(object):
         """
         Method for future test selection.
         """
-        self.selected = list
+        self.selected.clear()
+        for elem in self.test_tree:
+            if elem.value in list:
+                self.selected.append(elem)
 
     def importer(self, module_path: str) -> Module:
         """
@@ -272,6 +275,7 @@ class Runner(object):
         semaphore = Semaphore(concurrency)
 
         for test_method in self.selected:
+            print(test_method.module_path)
             module = self.importer(test_method.module_path)
 
             _class = getattr(module, test_method.test_class)
