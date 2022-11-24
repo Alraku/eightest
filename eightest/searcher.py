@@ -13,6 +13,7 @@ class TestMethod(object):
                  module_path: str,
                  test_class: str,
                  test_name: str,
+                 value: int,
                  decorator: str = None
                  ) -> None:
         self.module_path = module_path
@@ -20,6 +21,14 @@ class TestMethod(object):
         self.test_name = test_name
         self.decorator = decorator
         self.selected = None
+        self.value = value
+
+
+def infinite_sequence():
+    num = 0
+    while True:
+        yield str(num)
+        num += 1
 
 
 def find_folder_path() -> str:
@@ -111,6 +120,7 @@ def create_tree() -> list[dict]:
                     with their test functions.
     """
     test_tree = []
+    gen = infinite_sequence()
 
     for module in get_test_modules():
 
@@ -135,7 +145,7 @@ def create_tree() -> list[dict]:
                 if method.decorator_list:
                     pass
                     # print(method.decorator_list[0].id)
-                test_method = TestMethod(module, class_.name, method.name)
+                test_method = TestMethod(module, class_.name, method.name, next(gen))
                 test_tree.append(test_method)
 
     return test_tree
