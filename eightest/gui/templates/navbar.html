@@ -31,13 +31,23 @@
                 type: 'GET'
             })
             .done(response => {
-                const data = response
+                const data = response;
+                const allTests = response["name"]["passed"] + response["name"]["error"] + response["name"]["failed"] + response["name"]["notrun"];
+                var oneWidth = 600 / parseInt(allTests)
 
                 $('a[id="value-passed"]').contents().last()[0].textContent=response["name"]["passed"];
                 $('a[id="value-error"]').contents().last()[0].textContent=response["name"]["error"];
                 $('a[id="value-failed"]').contents().last()[0].textContent=response["name"]["failed"];
                 $('a[id="value-notrun"]').contents().last()[0].textContent=response["name"]["notrun"];
+                passed = document.getElementById('css-passed')
+                error = document.getElementById('css-error')
+                failed = document.getElementById('css-failed')
                 
+                passed.style.width = parseInt(response["name"]["passed"]) * oneWidth + 'px'
+                error.style.width = parseInt(response["name"]["error"]) * oneWidth + parseInt(response["name"]["passed"]) * oneWidth + 'px'
+                failed.style.width = parseInt(response["name"]["failed"]) * oneWidth + parseInt(response["name"]["error"]) * oneWidth + parseInt(response["name"]["passed"]) * oneWidth + 'px'
+
+                console.log(passed.style.width)
 
                 setTimeout(function() {
                 updateState()
@@ -71,13 +81,13 @@
             </a>
 
             <div class="progress-bar">
-                <div class="progress success" role="progress-bar">
+                <div id="css-passed" class="progress success" role="progress-bar">
                 </div>
-                <div class="progress error" role="progress-bar">
+                <div id="css-error" class="progress error" role="progress-bar">
                 </div>
-                <div class="progress failed" role="progress-bar">
+                <div id="css-failed" class="progress failed" role="progress-bar">
                 </div>
-                <div class="progress overall" role="progress-bar">
+                <div id="css-overall" class="progress overall" role="progress-bar">
                 </div>
             </div>
 
