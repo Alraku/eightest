@@ -370,13 +370,16 @@ class Runner(object):
         Pauses or resumes test execution.
         """
         for task in self.tasks.remaining:
-            if task.process.is_alive():
-                proc = psutil.Process(task.process.pid)
+            # if task.process.is_alive():
+            proc = psutil.Process(task.process.pid)
+            print('jestem w funkcji:', proc.status())
 
-                if proc.is_running():
-                    proc.suspend()
-                else:
-                    proc.resume()
+            if str(proc.status()) == 'running':
+                print('pauza')
+                proc.suspend()
+            else:
+                print('resume')
+                proc.resume()
 
     def get_results(self) -> None:
         """

@@ -56,6 +56,14 @@
         })
     </script>
 
+    <script>
+        function changeIcon(anchor) {
+        var icon = anchor.querySelector("i");
+        icon.classList.toggle('fa-pause');
+        icon.classList.toggle('fa-play');
+        }
+    </script>
+
     <div class="right">
         <a class="button">
             <button>
@@ -74,9 +82,9 @@
         <div class="progress-bar-inner">
             
 
-            <a class="action-button" href="{% url 'function' %}">
+            <a class="action-button" onclick="changeIcon(this)" href="{% url 'get_playpause' %}">
                 <button>
-                    <i class="fas fa-play"></i>
+                    <i class="fas fa-pause"></i>
                 </button>
             </a>
 

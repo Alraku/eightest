@@ -46,6 +46,14 @@ def answer_me(request):
             return JsonResponse({"name": 'xd'})
 
 
+def playpause(request):
+    if request.method == 'GET':
+        global variable
+        if variable:
+            response = runner.pause_resume()
+            return render(request, 'home.html')
+
+
 def chris(request):
     data = {'name': 'chris'}
     return JsonResponse(data)
