@@ -111,7 +111,7 @@ def read_from_module(module: str) -> Tuple[ast.FunctionDef, ast.ClassDef]:
     return functions, classes
 
 
-def create_tree() -> list[dict]:
+def create_tree(decor: str) -> list[dict]:
     """
     Searches for test functions in given test modules.
 
@@ -142,10 +142,12 @@ def create_tree() -> list[dict]:
                 if not method.name.startswith('test_'):
                     continue
 
-                if method.decorator_list:
-                    pass
-                    # print(method.decorator_list[0].id)
-                test_method = TestMethod(module, class_.name, method.name, next(gen))
+                tempdec = None
+                if decor:
+                    if method.decorator_list:
+                        # print(method.decorator_list[0].id)
+                        tempdec = method.decorator_list[0].id
+                test_method = TestMethod(module, class_.name, method.name, next(gen), tempdec)
                 test_tree.append(test_method)
 
     return test_tree

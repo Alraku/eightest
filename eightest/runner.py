@@ -214,7 +214,7 @@ class Runner(object):
     Class responsible for creating processes in which
     each test is executed separately and independently.
     """
-    def __init__(self) -> None:
+    def __init__(self, decor: str = None) -> None:
         """
         Initialization of processes list
         and generating tests' hierarchy.
@@ -222,8 +222,9 @@ class Runner(object):
         set_cpu_count()
         load_env_file()
         self.tasks = Tasks()
-        self.test_tree: List[TestMethod] = create_tree()
+        self.test_tree: List[TestMethod] = create_tree(decor)
         self.selected: List[TestMethod] = []
+        self.decor = decor
 
     def collect_tests(self, list) -> None:
         """
@@ -274,8 +275,16 @@ class Runner(object):
 
         semaphore = Semaphore(concurrency)
 
+        if self.decor:
+            for test_method in self.test_tree:
+                if test_method.decorator:
+                    self.selected.append(test_method)
+
+        if not self.selected:
+            self.selected = self.test_tree
+
         for test_method in self.selected:
-            print(test_method.module_path)
+
             module = self.importer(test_method.module_path)
 
             _class = getattr(module, test_method.test_class)
@@ -361,13 +370,16 @@ class Runner(object):
         Pauses or resumes test execution.
         """
         for task in self.tasks.remaining:
-            if task.process.is_alive():
-                proc = psutil.Process(task.process.pid)
+            # if task.process.is_alive():
+            proc = psutil.Process(task.process.pid)
+            print('jestem w funkcji:', proc.status())
 
-                if proc.is_running():
-                    proc.suspend()
-                else:
-                    proc.resume()
+            if str(proc.status()) == 'running':
+                print('pauza')
+                proc.suspend()
+            else:
+                print('resume')
+                proc.resume()
 
     def get_results(self) -> None:
         """
@@ -383,5 +395,19 @@ def main():
     runner.get_results()
 
 
+def argsparser():
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', metavar='DECORATOR', type=str, default=None)
+
+    args = parser.parse_args()
+
+    runner = Runner(args.d)
+    runner.dispatch_tasks()
+    runner.run_tests()
+    runner.get_results()
+
 if __name__ == "__main__":
-    main()
+    # main()
+    argsparser()
