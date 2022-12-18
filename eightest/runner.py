@@ -1,5 +1,6 @@
 import os
 import time
+import jsons
 import pprint
 import psutil
 import importlib
@@ -130,6 +131,9 @@ class Task(object):
          self.result.duration,
          self.result.retries) = self._pipe_conn.recv()
 
+    def __repr__(self):
+        return json.dumps(self.__dict__)
+
 
 class Tasks(object):
     """
@@ -204,9 +208,14 @@ class Tasks(object):
             "passed": passed,
             "error": error,
             "failed": failed,
-            "notrun": notrun
+            "notrun": notrun,
+            "list": jsons.dump(self.completed)
         }
         return progress
+
+    def reset(self) -> None:
+        self.remaining.clear()
+        self.completed.clear()
 
 
 class Runner(object):

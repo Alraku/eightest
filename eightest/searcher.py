@@ -43,7 +43,7 @@ def find_folder_path() -> str:
         dirs[:] = [d for d in dirs if d not in exclude]
 
         for dirname in dirs:
-            if dirname in ('tests', 'test'):
+            if dirname in ('tests', 'test', os.getenv('TEST_LOCATION')):
                 return os.path.join(root, dirname)
 
         raise FileNotFoundError('Could not find test(s) folder.')
