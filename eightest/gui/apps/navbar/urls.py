@@ -8,5 +8,6 @@ urlpatterns = [
     path("", home_views.home, name="home"),
     path("chris", navbar_views.chris, name="chris"),
     path('get_response', navbar_views.answer_me, name='get_response'),
-    path('get_playpause', navbar_views.playpause, name='get_playpause')
+    path('get_playpause', navbar_views.playpause, name='get_playpause'),
+    path('reset', navbar_views.reset, name='reset')
 ]

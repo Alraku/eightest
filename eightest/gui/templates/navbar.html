@@ -47,7 +47,28 @@
                 error.style.width = parseInt(response["name"]["error"]) * oneWidth + parseInt(response["name"]["passed"]) * oneWidth + 'px'
                 failed.style.width = parseInt(response["name"]["failed"]) * oneWidth + parseInt(response["name"]["error"]) * oneWidth + parseInt(response["name"]["passed"]) * oneWidth + 'px'
 
-                console.log(passed.style.width)
+
+                function myFunction(item, index, arr) {
+                    // console.log(item["process"]["test_name"] + item["result"]["status"])
+                    if (response["name"]["list"][index] != undefined) {
+                        var invalid = false;
+                        $("#results li").each((id, elem) => {
+                            if (elem.innerText == item["process"]["test_name"] + item["result"]["status"]) {
+                                // console.log(elem.innerText);
+                                invalid = true
+                                return
+                            }})
+                        if (invalid == true) { return }
+
+                        var ul = document.getElementById("results");
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode(response["name"]["list"][index]["process"]["test_name"]));
+                        li.appendChild(document.createTextNode(response["name"]["list"][index]["result"]["status"]))
+                        ul.appendChild(li);
+                    }
+                }
+
+                response["name"]["list"].forEach(myFunction);
 
                 setTimeout(function() {
                 updateState()
@@ -61,6 +82,19 @@
         var icon = anchor.querySelector("i");
         icon.classList.toggle('fa-pause');
         icon.classList.toggle('fa-play');
+        }
+    </script>
+
+    <script>
+        function resetData() {
+            $.ajax({
+                url: "{% url 'reset' %}",
+                type: 'GET'
+            })
+            .done(response => {
+                const data = response;
+                window.location.href = '/';
+            })
         }
     </script>
 
@@ -102,6 +136,11 @@
             <a class="tests-text">
                 0/0
             </a>
+            <a class="action-button" style="margin-left: 15px;" onclick="resetData()">
+                <button>
+                    <i class="fas fa-sync"></i>
+                </button>
+            </a>
 
         </div>
         <div class="labels-container">
@@ -124,6 +163,11 @@
                 </li>
             </ul>
         </div>
+
+        <ul id="results">
+
+        </ul>
+
     </div>
 </div>
 

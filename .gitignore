@@ -133,7 +133,7 @@ dmypy.json
 .DS_Store
 
 # Other Stuff
-tests
+# tests
 example.py
 staticfiles
 

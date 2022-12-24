@@ -41,7 +41,7 @@ def answer_me(request):
         global variable
         if variable:
             response = runner.tasks.get_progress()
-            return JsonResponse({"name": response})
+            return JsonResponse({"name": response, "variable": variable})
         else:
             return JsonResponse({"name": 'xd'})
 
@@ -51,6 +51,14 @@ def playpause(request):
         global variable
         if variable:
             response = runner.pause_resume()
+            return render(request, 'home.html')
+
+
+def reset(request):
+    if request.method == 'GET':
+        global variable
+        if variable:
+            response = runner.tasks.reset()
             return render(request, 'home.html')
 
 
