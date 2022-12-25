@@ -53,7 +53,7 @@
                     if (response["name"]["list"][index] != undefined) {
                         var invalid = false;
                         $("#results li").each((id, elem) => {
-                            if (elem.innerText == item["process"]["test_name"] + item["result"]["status"]) {
+                            if (elem.innerText == item["process"]["test_name"] + " - " + item["result"]["status"]) {
                                 // console.log(elem.innerText);
                                 invalid = true
                                 return
@@ -63,6 +63,7 @@
                         var ul = document.getElementById("results");
                         var li = document.createElement("li");
                         li.appendChild(document.createTextNode(response["name"]["list"][index]["process"]["test_name"]));
+                        li.appendChild(document.createTextNode(" - "));
                         li.appendChild(document.createTextNode(response["name"]["list"][index]["result"]["status"]))
                         ul.appendChild(li);
                     }
