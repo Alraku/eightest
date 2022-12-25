@@ -86,13 +86,13 @@ class TestCase(metaclass=MetaTestCase):
         self._status = status
         self.message = message
 
-    def fail(self, message: str | None) -> None:
+    def fail(self, message: str) -> None:
         """
         Indicate this test failed.
         """
         self._update(Status.FAILED, message)
 
-    def error(self, message: str | None) -> None:
+    def error(self, message: str) -> None:
         """
         Indicate this test has encountered an error.
         """
@@ -140,7 +140,7 @@ class Results(object):
         """
         self.status = Status.FAILED
 
-    def error(self, message: str | None = None) -> None:
+    def error(self, message: str = None) -> None:
         """
         Indicate the test run fatally errored.
         """

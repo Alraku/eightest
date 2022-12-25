@@ -26,7 +26,7 @@ class Result(object):
     """
     def __init__(self,
                  status: Status = Status.NOTRUN,
-                 message: str | None = None
+                 message: str = None
                  ) -> None:
         """
         Args:

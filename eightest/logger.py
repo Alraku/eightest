@@ -24,7 +24,7 @@ class S_FileHandler(FileHandler):
                  test_name: str,
                  session_date: str,
                  mode: str = 'a',
-                 encoding: str | None = None,
+                 encoding: str = None,
                  delay: int = 0
                  ) -> None:
         """
